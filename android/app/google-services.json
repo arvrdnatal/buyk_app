@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "946350958970",
+    "firebase_url": "https://buyk-app-default-rtdb.firebaseio.com",
+    "project_id": "buyk-app",
+    "storage_bucket": "buyk-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:946350958970:android:c8ef8565ac73a5e52ecec3",
+        "android_client_info": {
+          "package_name": "com.conifer.buykapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "946350958970-emf3fcihhn24nkdsb8p44c44o0te50ob.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.conifer.buykapp",
+            "certificate_hash": "61b066f4562933785b98e7fd9e054ac444af3d1a"
+          }
+        },
+        {
+          "client_id": "946350958970-h3ds4flpetmds73frm0518d3ckmq5733.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCYDtwWFL4gFWI72lb8L0-ywSr4qZgGr4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "946350958970-h3ds4flpetmds73frm0518d3ckmq5733.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
