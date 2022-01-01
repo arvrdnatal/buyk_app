@@ -1,4 +1,5 @@
-import 'package:buyk_app/app/global/colors_global.dart';
+import 'package:buyk_app/app/app_routes.dart';
+import 'package:buyk_app/app/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AppWidget extends StatelessWidget {
@@ -13,8 +14,11 @@ class AppWidget extends StatelessWidget {
         primaryColor: GlobalColors.green,
         disabledColor: GlobalColors.deadGreen,
       ),
-      home: const Center(
-        child: Text('inicio'),
+      home: const Scaffold(
+        body: Padding(
+          padding: EdgeInsets.all(20),
+          child: AppRoutes.getStarted,
+        ),
       ),
     );
   }
