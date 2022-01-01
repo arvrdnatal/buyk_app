@@ -1,4 +1,4 @@
-import 'package:buyk_app/app/pages/getStarted/pagina_getstarted_widget.dart';
+import 'package:buyk_app/app/pages/getStarted/components/pagina_getstarted_widget.dart';
 import 'package:flutter/material.dart';
 
 class PaginaGetStartedViewModel {
