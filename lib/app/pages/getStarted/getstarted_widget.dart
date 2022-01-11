@@ -26,7 +26,7 @@ class _GetStartedState extends State<GetStarted> {
           children: [
             paginasBuilder(),
             indicadorDePaginas(),
-            // rodapePaginacao(),
+            rodapePaginacao(),
           ],
         ),
       ),
@@ -94,10 +94,8 @@ class _GetStartedState extends State<GetStarted> {
   }
 
   Widget botoesDePaginacao() {
-    return Expanded(
-      flex: 1,
-      child: (currentPage == (paginas.length - 1)) ?
-      Padding(
+    if(currentPage == (paginas.length - 1)) {
+      return Padding(
         padding: const EdgeInsets.only(
           top: 15,
           bottom: 15,
@@ -121,30 +119,26 @@ class _GetStartedState extends State<GetStarted> {
               fontWeight: FontWeight.bold,
             ),
           ),
-        )
-      ) :
-      Align(
-        alignment: Alignment.center,
-        child: IconButton(
-          onPressed: () => {
-            pageController.nextPage(
-              duration: const Duration(milliseconds: 800),
-              curve: Curves.easeInOutQuint,
-            )
-          },
-          icon: const Icon(Icons.navigate_next_rounded),
-          color: GlobalColors.deadGreen,
-          iconSize: 50,
         ),
-      ),
-    );
+      );
+    } else {
+      return IconButton(
+        onPressed: () => {
+          pageController.nextPage(
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeInOutQuint,
+          )
+        },
+        icon: const Icon(Icons.navigate_next_rounded),
+        color: GlobalColors.deadGreen,
+        iconSize: 50,
+      );
+    }
   }
 
   Widget fraseDeLogin() {
-    return Expanded(
-      flex: 0,
-      child: (currentPage == (paginas.length - 1)) ?
-      Row(
+    if(currentPage == (paginas.length - 1)) {
+      return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
@@ -165,8 +159,9 @@ class _GetStartedState extends State<GetStarted> {
             ),
           ),
         ],
-      ) :
-      Container(),
-    );
+      );
+    } else {
+      return Container();
+    }
   }
 }
