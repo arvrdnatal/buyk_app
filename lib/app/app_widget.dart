@@ -14,12 +14,8 @@ class AppWidget extends StatelessWidget {
         primaryColor: GlobalColors.green,
         disabledColor: GlobalColors.deadGreen,
       ),
-      home: const Scaffold(
-        body: Padding(
-          padding: EdgeInsets.all(20),
-          child: AppRoutes.getStarted,
-        ),
-      ),
+      initialRoute: '/',
+      routes: AppRoutes.routes,
     );
   }
 }

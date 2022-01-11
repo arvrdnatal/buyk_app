@@ -19,12 +19,17 @@ class _GetStartedState extends State<GetStarted> {
   @override
   Widget build(BuildContext context) {
     paginas = getStartedController.getPaginasGetStarted();
-    return Column(
-      children: [
-        paginasBuilder(),
-        indicadorDePaginas(),
-        rodapePaginacao(),
-      ],
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            paginasBuilder(),
+            indicadorDePaginas(),
+            // rodapePaginacao(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -98,7 +103,9 @@ class _GetStartedState extends State<GetStarted> {
           bottom: 15,
         ),
         child: TextButton(
-          onPressed: () => {},
+          onPressed: () => {
+            Navigator.of(context).pushNamed('/cadastro')
+          },
           style: TextButton.styleFrom(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(50),
