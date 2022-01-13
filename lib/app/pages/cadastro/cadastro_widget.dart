@@ -469,8 +469,8 @@ class _CadastroState extends State<Cadastro> {
     return Padding(
       padding: const EdgeInsets.only(
         top: 20,
-        right: 100,
-        left: 100,
+        right: 70,
+        left: 70,
         bottom: 10,
       ),
       child: TextButton(

@@ -65,7 +65,9 @@ class CadastroController {
     _setState();
   }
 
-  registrarUsuario(GlobalKey<FormState> _formKey, BuildContext contextState) {
+  registrarUsuario(GlobalKey<FormState> _formKey, BuildContext contextState) async {
+    verificaEmail();
+    verificaUsername();
     if (_formKey.currentState!.validate()) {
       firebaseAuth.createUserWithEmailAndPassword(
           email: _emailController.text,
