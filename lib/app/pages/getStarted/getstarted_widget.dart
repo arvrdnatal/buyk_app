@@ -36,13 +36,19 @@ class _GetStartedState extends State<GetStarted> {
   Widget paginasBuilder() {
     return Expanded(
       flex: 8,
-      child: PageView.builder(
-        scrollDirection: Axis.horizontal,
-        controller: pageController,
-        itemCount: paginas.length,
-        physics: const NeverScrollableScrollPhysics(),
-        onPageChanged: (int index) { setState(() { currentPage = index; }); },
-        itemBuilder: (BuildContext context, int index) { return paginas[index]; },
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Align(
+          alignment: Alignment.center,
+          child: PageView.builder(
+            scrollDirection: Axis.horizontal,
+            controller: pageController,
+            itemCount: paginas.length,
+            physics: const NeverScrollableScrollPhysics(),
+            onPageChanged: (int index) { setState(() { currentPage = index; }); },
+            itemBuilder: (BuildContext context, int index) { return paginas[index]; },
+          ),
+        ),
       ),
     );
   }
@@ -81,7 +87,7 @@ class _GetStartedState extends State<GetStarted> {
         alignment: Alignment.center,
         children: [
           Align(
-            alignment: Alignment.topCenter,
+            alignment: Alignment.center,
             child: botoesDePaginacao(),
           ),
           Align(
@@ -96,10 +102,7 @@ class _GetStartedState extends State<GetStarted> {
   Widget botoesDePaginacao() {
     if(currentPage == (paginas.length - 1)) {
       return Padding(
-        padding: const EdgeInsets.only(
-          top: 15,
-          bottom: 15,
-        ),
+        padding: const EdgeInsets.only(bottom: 25),
         child: TextButton(
           onPressed: () => {
             Navigator.of(context).pushNamed('/cadastro')

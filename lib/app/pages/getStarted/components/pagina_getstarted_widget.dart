@@ -22,10 +22,16 @@ class PaginaGetStarted extends StatelessWidget {
 
   Widget getIcon() {
     if(icone == null) return Container();
-    return Icon(
-      icone!,
-      color: GlobalColors.deadGreen,
-      size: 100,
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: 20,
+        top: 20,
+      ),
+      child: Icon(
+        icone!,
+        color: GlobalColors.deadGreen,
+        size: 100,
+      ),
     );
   }
 
