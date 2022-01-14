@@ -152,7 +152,9 @@ class _GetStartedState extends State<GetStarted> {
             ),
           ),
           TextButton(
-            onPressed: () => {},
+            onPressed: () => {
+              Navigator.of(context).pushNamed('/login')
+            },
             child: Text(
               'Login',
               style: GoogleFonts.raleway(
