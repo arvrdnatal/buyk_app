@@ -100,8 +100,8 @@ class _GetStartedState extends State<GetStarted> {
       return Padding(
         padding: const EdgeInsets.only(bottom: 25),
         child: TextButton(
-          onPressed: () => {
-            Navigator.of(context).pushNamed('/cadastro')
+          onPressed: () {
+            _getStartedController.navegarParaCadastro(context);
           },
           style: TextButton.styleFrom(
             shape: RoundedRectangleBorder(
@@ -148,8 +148,8 @@ class _GetStartedState extends State<GetStarted> {
             ),
           ),
           TextButton(
-            onPressed: () => {
-              Navigator.of(context).pushNamed('/login')
+            onPressed: () {
+              _getStartedController.navegarParaLogin(context);
             },
             child: Text(
               'Login',

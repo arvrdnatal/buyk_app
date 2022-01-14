@@ -12,6 +12,9 @@ class GetStartedController {
     _paginas = _paginaGetStartedViewModel.getPaginasGetStarted();
   }
 
+  void navegarParaCadastro(BuildContext context) => Navigator.of(context).pushNamed('/cadastro');
+  void navegarParaLogin(BuildContext context) => Navigator.of(context).pushNamed('/login');
+
   PageController get pageController => _pageController;
   List<Widget> get paginas => _paginas;
 }
