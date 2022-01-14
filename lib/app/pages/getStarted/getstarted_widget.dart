@@ -11,14 +11,10 @@ class GetStarted extends StatefulWidget {
 }
 
 class _GetStartedState extends State<GetStarted> {
-  int currentPage = 0;
-  final PageController pageController = PageController();
-  final GetStartedController getStartedController = GetStartedController();
-  late List<Widget> paginas;
+  final GetStartedController _getStartedController = GetStartedController();
 
   @override
   Widget build(BuildContext context) {
-    paginas = getStartedController.getPaginasGetStarted();
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -42,11 +38,11 @@ class _GetStartedState extends State<GetStarted> {
           alignment: Alignment.center,
           child: PageView.builder(
             scrollDirection: Axis.horizontal,
-            controller: pageController,
-            itemCount: paginas.length,
+            controller: _getStartedController.pageController,
+            itemCount: _getStartedController.paginas.length,
             physics: const NeverScrollableScrollPhysics(),
-            onPageChanged: (int index) { setState(() { currentPage = index; }); },
-            itemBuilder: (BuildContext context, int index) { return paginas[index]; },
+            onPageChanged: (int index) { setState(() { _getStartedController.currentPage = index; }); },
+            itemBuilder: (BuildContext context, int index) { return _getStartedController.paginas[index]; },
           ),
         ),
       ),
@@ -60,18 +56,18 @@ class _GetStartedState extends State<GetStarted> {
         alignment: Alignment.bottomCenter,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: List<Widget>.generate(paginas.length, (int index) {
+          children: List<Widget>.generate(_getStartedController.paginas.length, (int index) {
             return AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               height: 10,
-              width: (index == currentPage) ? 15 : 10,
+              width: (index == _getStartedController.currentPage) ? 15 : 10,
               margin: const EdgeInsets.symmetric(
                 horizontal: 5,
                 vertical: 10,
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
-                color: (index == currentPage) ? GlobalColors.deadGreen : GlobalColors.deadGreen.withOpacity(0.5),
+                color: (index == _getStartedController.currentPage) ? GlobalColors.deadGreen : GlobalColors.deadGreen.withOpacity(0.5),
               ),
             );
           }),
@@ -100,7 +96,7 @@ class _GetStartedState extends State<GetStarted> {
   }
 
   Widget botoesDePaginacao() {
-    if(currentPage == (paginas.length - 1)) {
+    if(_getStartedController.currentPage == (_getStartedController.paginas.length - 1)) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 25),
         child: TextButton(
@@ -127,7 +123,7 @@ class _GetStartedState extends State<GetStarted> {
     } else {
       return IconButton(
         onPressed: () => {
-          pageController.nextPage(
+          _getStartedController.pageController.nextPage(
             duration: const Duration(milliseconds: 800),
             curve: Curves.easeInOutQuint,
           )
@@ -140,7 +136,7 @@ class _GetStartedState extends State<GetStarted> {
   }
 
   Widget fraseDeLogin() {
-    if(currentPage == (paginas.length - 1)) {
+    if(_getStartedController.currentPage == (_getStartedController.paginas.length - 1)) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

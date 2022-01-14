@@ -2,12 +2,16 @@ import 'package:buyk_app/app/pages/getStarted/components/pagina_getstarted_viewm
 import 'package:flutter/material.dart';
 
 class GetStartedController {
-  final PaginaGetStartedViewModel _paginaGetStartedViewModel;
+  late final PaginaGetStartedViewModel _paginaGetStartedViewModel;
+  final PageController _pageController = PageController();
+  late final List<Widget> _paginas;
+  int currentPage = 0;
 
-  GetStartedController() :
+  GetStartedController() {
     _paginaGetStartedViewModel = PaginaGetStartedViewModel();
-
-  List<Widget> getPaginasGetStarted() {
-    return _paginaGetStartedViewModel.getPaginasGetStarted();
+    _paginas = _paginaGetStartedViewModel.getPaginasGetStarted();
   }
+
+  PageController get pageController => _pageController;
+  List<Widget> get paginas => _paginas;
 }
