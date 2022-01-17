@@ -20,6 +20,7 @@ class UsuarioService implements IServices<UsuarioModel> {
     };
     if(mapObjeto['nome']!.isEmpty) usuario['nome'] = mapObjeto['nome'];
     if(mapObjeto['sobrenome']!.isEmpty) usuario['sobrenome'] = mapObjeto['sobrenome'];
+    if(mapObjeto['imagem']!.isEmpty) usuario['imagem'] = mapObjeto['imagem'];
 
     _colection.doc(mapObjeto['id']).set(usuario);
   }
@@ -38,14 +39,15 @@ class UsuarioService implements IServices<UsuarioModel> {
   @override
   Future get(String id) async {
     Map<String,dynamic> data = jsonDecode(jsonEncode((await _colection.doc(id).get()).data()));
-    return UsuarioModel(
-      id: (await _colection.doc(id).get()).id,
-      nome: (data.containsKey('nome') ? data['nome'] : ''),
-      sobrenome: (data.containsKey('sobrenome') ? data['sobrenome'] : ''),
-      email: data['email'],
-      senha: data['senha'],
-      username: data['username']
-    );
+    return {
+      'id': (await _colection.doc(id).get()).id,
+      'nome': (data.containsKey('nome') ? data['nome'] : ''),
+      'sobrenome': (data.containsKey('sobrenome') ? data['sobrenome'] : ''),
+      'email': data['email'],
+      'senha': data['senha'],
+      'username': data['username'],
+      'imagem': (data.containsKey('imagem') ? data['imagem'] : ''),
+    };
   }
 
   @override

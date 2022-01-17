@@ -1,4 +1,4 @@
-package com.example.buyk_app
+package com.conifer.buykapp
 
 import io.flutter.embedding.android.FlutterActivity
 
