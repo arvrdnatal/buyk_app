@@ -21,5 +21,5 @@ Future<void> main() async {
   } catch (e) {
     rethrow;
   }
-  runApp(const AppWidget());
+  runApp(AppWidget());
 }
