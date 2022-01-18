@@ -79,12 +79,6 @@ class LoginController {
     }
   }
 
-  _dispose() {
-    print('oi');
-    _emailController.dispose();
-    _senhaController.dispose();
-  }
-
   String? get mensagemValidacaoEmail => _mensagemValidacaoEmail;
   String? get mensagemValidacaoSenha => _mensagemValidacaoSenha;
   bool get isCheckingEmail => _isCheckingEmail;
