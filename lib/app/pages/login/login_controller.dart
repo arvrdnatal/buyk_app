@@ -70,8 +70,7 @@ class LoginController {
         email: _emailController.text,
         password: _senhaController.text,
       ).then((_) {
-        Navigator.of(contextState).pushNamed('/inicio');
-        _dispose();
+        Navigator.of(contextState).pushNamedAndRemoveUntil('/inicio', (route) => false);
       }).catchError((error) {
         ScaffoldMessenger.of(contextState).showSnackBar(
           SnackBar(content: Text(error.toString())),
@@ -81,6 +80,7 @@ class LoginController {
   }
 
   _dispose() {
+    print('oi');
     _emailController.dispose();
     _senhaController.dispose();
   }

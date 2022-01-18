@@ -233,8 +233,8 @@ class _LoginState extends State<Login> {
         bottom: 10,
       ),
       child: TextButton(
-        onPressed: () => {
-          _loginController.logarUsuario(_formKey, context)
+        onPressed: () {
+          _loginController.logarUsuario(_formKey, context);
         },
         style: TextButton.styleFrom(
           shape: RoundedRectangleBorder(
