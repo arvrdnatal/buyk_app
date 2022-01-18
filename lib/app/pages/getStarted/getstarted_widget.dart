@@ -147,12 +147,12 @@ class _GetStartedState extends State<GetStarted> {
               fontSize: 15,
             ),
           ),
-          TextButton(
-            onPressed: () {
+          InkWell(
+            onTap: () {
               _getStartedController.navegarParaLogin(context);
             },
             child: Text(
-              'Login',
+              ' Login',
               style: GoogleFonts.raleway(
                 color: GlobalColors.lightGreen,
                 fontSize: 15,
