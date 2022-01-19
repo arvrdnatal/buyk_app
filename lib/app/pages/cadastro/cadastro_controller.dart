@@ -70,8 +70,8 @@ class CadastroController {
     verificaUsername();
     if (_formKey.currentState!.validate()) {
       firebaseAuth.createUserWithEmailAndPassword(
-          email: _emailController.text,
-          password: _senhaController.text,
+        email: _emailController.text,
+        password: _senhaController.text,
       ).then((result) {
         UsuarioModel usuario = UsuarioModel(
           id: result.user!.uid,
@@ -80,25 +80,17 @@ class CadastroController {
           email: _emailController.text,
           senha: _senhaController.text,
           username: _usernameController.text,
+          imagem: '',
         );
         _usuarioService.add(usuario).then((_) {
-          Navigator.of(contextState).pushNamed('/inicio', arguments: result.user!.uid);
-          _dispose();
+          Navigator.of(contextState).pushNamedAndRemoveUntil('/inicio', (route) => false);
         });
       }).catchError((err) {
         ScaffoldMessenger.of(contextState).showSnackBar(
-          SnackBar(content: Text(err)),
+          SnackBar(content: Text(err.toString())),
         );
       });
     }
-  }
-
-  void _dispose() {
-    _nomeController.dispose();
-    _sobrenomeController.dispose();
-    _emailController.dispose();
-    _usernameController.dispose();
-    _senhaController.dispose();
   }
 
   String? get mensagemValidacaoUsername => _mensagemValidacaoUsername;

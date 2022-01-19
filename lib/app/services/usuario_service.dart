@@ -18,9 +18,9 @@ class UsuarioService implements IServices<UsuarioModel> {
       'senha': mapObjeto['senha'],
       'username': mapObjeto['username'],
     };
-    if(mapObjeto['nome']!.isEmpty) usuario['nome'] = mapObjeto['nome'];
-    if(mapObjeto['sobrenome']!.isEmpty) usuario['sobrenome'] = mapObjeto['sobrenome'];
-    if(mapObjeto['imagem']!.isEmpty) usuario['imagem'] = mapObjeto['imagem'];
+    if(mapObjeto['nome']!.isNotEmpty) usuario['nome'] = mapObjeto['nome'];
+    if(mapObjeto['sobrenome']!.isNotEmpty) usuario['sobrenome'] = mapObjeto['sobrenome'];
+    if(mapObjeto['imagem']!.isNotEmpty) usuario['imagem'] = mapObjeto['imagem'];
 
     _colection.doc(mapObjeto['id']).set(usuario);
   }

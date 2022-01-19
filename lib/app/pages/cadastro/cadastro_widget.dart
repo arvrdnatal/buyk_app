@@ -474,8 +474,8 @@ class _CadastroState extends State<Cadastro> {
         bottom: 10,
       ),
       child: TextButton(
-        onPressed: () => {
-          _cadastroController.registrarUsuario(_formKey, context)
+        onPressed: () {
+          _cadastroController.registrarUsuario(_formKey, context);
         },
         style: TextButton.styleFrom(
           shape: RoundedRectangleBorder(
