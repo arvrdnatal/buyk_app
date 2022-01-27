@@ -156,51 +156,16 @@ class _MeuPerfilState extends State<MeuPerfil> {
           ).image,
         ) :
         null,
+        color: img.isNotEmpty ?
+        Colors.transparent :
+        GlobalColors.deadGreen,
       ),
-      child: TextButton(
-        style: TextButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100),
-          ),
-          backgroundColor: img.isNotEmpty ?
-          Colors.transparent :
-          GlobalColors.deadGreen,
-        ),
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return SizedBox(
-                height: 120,
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: const Text('Escolha uma foto da galeria'),
-                      onTap: () {
-                        _meuPerfilController.editarImagem();
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      title: const Text('Remover foto'),
-                      onTap: () {
-                        _meuPerfilController.removerImagem();
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
-              );
-            }
-          );
-        },
-        child: img.isNotEmpty ?
-        Container() :
-        const Icon(
-          Icons.person_rounded,
-          size: 100,
-          color: Colors.black,
-        ),
+      child: img.isNotEmpty ?
+      Container() :
+      const Icon(
+        Icons.person_rounded,
+        size: 100,
+        color: Colors.black,
       ),
     );
   }
