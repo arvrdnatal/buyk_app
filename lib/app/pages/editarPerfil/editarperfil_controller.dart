@@ -98,7 +98,7 @@ class EditarPerfilController {
     _mensagemValidacaoUsername = null;
     if(username != _usuario!.toMap()['username']) {
       if (username.isEmpty) _mensagemValidacaoUsername = 'O campo username é obrigatório';
-      if (username.contains(' ')) _mensagemValidacaoUsername = 'O nome de uuário não deve conter espaços';
+      if (username.contains(' ')) _mensagemValidacaoUsername = 'O nome de usuário não deve conter espaços';
 
       _isCheckingUsername = true;
       _setState();
