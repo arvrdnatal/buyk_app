@@ -51,6 +51,7 @@ class CadastroController {
     String username = _usernameController.text;
     _mensagemValidacaoUsername = null;
     if(username.isEmpty) _mensagemValidacaoUsername = 'O campo username é obrigatório';
+    if (username.contains(' ')) _mensagemValidacaoUsername = 'O nome de usuário não deve conter espaços';
 
     _isCheckingUsername = true;
     _setState();

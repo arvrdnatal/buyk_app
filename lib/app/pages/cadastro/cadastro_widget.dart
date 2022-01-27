@@ -238,59 +238,55 @@ class _CadastroState extends State<Cadastro> {
               ),
             ],
           ),
-          Focus(
-            onFocusChange: (hasFocus) {
-              if(!hasFocus) _cadastroController.verificaUsername();
-            },
-            child: TextFormField(
-              controller: _cadastroController.usernameController,
-              cursorColor: GlobalColors.deadGreen,
-              style: GoogleFonts.raleway(
-                color: GlobalColors.deadGreen,
-              ),
-              decoration: InputDecoration(
-                suffixIcon: _cadastroController.isCheckingUsername ?
-                Transform.scale(
-                  scale: 0.5,
-                  child: const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF63911d)),
-                  ),
-                ) : null,
-                hintText: 'Digite seu nome de usuário',
-                hintStyle: GoogleFonts.raleway(
-                  color: GlobalColors.deadGreen.withOpacity(0.5),
+          TextFormField(
+            controller: _cadastroController.usernameController,
+            onChanged: (_) => _cadastroController.verificaUsername(),
+            cursorColor: GlobalColors.deadGreen,
+            style: GoogleFonts.raleway(
+              color: GlobalColors.deadGreen,
+            ),
+            decoration: InputDecoration(
+              suffixIcon: _cadastroController.isCheckingUsername ?
+              Transform.scale(
+                scale: 0.5,
+                child: const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF63911d)),
                 ),
-                errorStyle: GoogleFonts.raleway(
+              ) : null,
+              hintText: 'Digite seu nome de usuário',
+              hintStyle: GoogleFonts.raleway(
+                color: GlobalColors.deadGreen.withOpacity(0.5),
+              ),
+              errorStyle: GoogleFonts.raleway(
+                color: Colors.red,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: GlobalColors.deadGreen,
+                  width: 1,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    width: 2,
+                    color: GlobalColors.lightGreen
+                ),
+              ),
+              errorBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
                   color: Colors.red,
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: GlobalColors.deadGreen,
-                    width: 1,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      width: 2,
-                      color: GlobalColors.lightGreen
-                  ),
-                ),
-                errorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.red,
-                  ),
-                ),
-                focusedErrorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.red,
-                  ),
+              ),
+              focusedErrorBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red,
                 ),
               ),
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (_) {
-                return _cadastroController.mensagemValidacaoUsername;
-              },
             ),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (_) {
+              return _cadastroController.mensagemValidacaoUsername;
+            },
           ),
         ],
       ),
@@ -328,59 +324,55 @@ class _CadastroState extends State<Cadastro> {
               ),
             ],
           ),
-          Focus(
-            onFocusChange: (hasFocus) {
-              if(!hasFocus) _cadastroController.verificaEmail();
-            },
-            child: TextFormField(
-              controller: _cadastroController.emailController,
-              cursorColor: GlobalColors.deadGreen,
-              style: GoogleFonts.raleway(
-                color: GlobalColors.deadGreen,
-              ),
-              decoration: InputDecoration(
-                suffixIcon: _cadastroController.isCheckingEmail ?
-                Transform.scale(
-                  scale: 0.5,
-                  child: const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF63911d)),
-                  ),
-                ) : null,
-                hintText: 'Digite seu e-mail',
-                hintStyle: GoogleFonts.raleway(
-                  color: GlobalColors.deadGreen.withOpacity(0.5),
+          TextFormField(
+            controller: _cadastroController.emailController,
+            onChanged: (_) => _cadastroController.verificaEmail(),
+            cursorColor: GlobalColors.deadGreen,
+            style: GoogleFonts.raleway(
+              color: GlobalColors.deadGreen,
+            ),
+            decoration: InputDecoration(
+              suffixIcon: _cadastroController.isCheckingEmail ?
+              Transform.scale(
+                scale: 0.5,
+                child: const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF63911d)),
                 ),
-                errorStyle: GoogleFonts.raleway(
+              ) : null,
+              hintText: 'Digite seu e-mail',
+              hintStyle: GoogleFonts.raleway(
+                color: GlobalColors.deadGreen.withOpacity(0.5),
+              ),
+              errorStyle: GoogleFonts.raleway(
+                color: Colors.red,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: GlobalColors.deadGreen,
+                  width: 1,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    width: 2,
+                    color: GlobalColors.lightGreen
+                ),
+              ),
+              errorBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
                   color: Colors.red,
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: GlobalColors.deadGreen,
-                    width: 1,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      width: 2,
-                      color: GlobalColors.lightGreen
-                  ),
-                ),
-                errorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.red,
-                  ),
-                ),
-                focusedErrorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.red,
-                  ),
+              ),
+              focusedErrorBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red,
                 ),
               ),
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (_) {
-                return _cadastroController.mensagemValidacaoEmail;
-              }
             ),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (_) {
+              return _cadastroController.mensagemValidacaoEmail;
+            }
           ),
         ],
       ),
