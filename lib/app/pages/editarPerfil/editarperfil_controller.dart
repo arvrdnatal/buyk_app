@@ -14,8 +14,7 @@ import 'package:image_picker/image_picker.dart';
 class EditarPerfilController {
   // services
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseStorage _firebaseStorage =
-      FirebaseStorage.instanceFor(app: Firebase.app());
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instanceFor(app: Firebase.app());
   final UsuarioService _usuarioService = UsuarioService.instance;
   final AsyncMemoizer _memoizer = AsyncMemoizer();
   // controllers
@@ -83,7 +82,6 @@ class EditarPerfilController {
         }
       }
     }
-    _setState();
   }
 
   Future removerImagem() async {
@@ -91,6 +89,11 @@ class EditarPerfilController {
     _firebaseStorage.ref().child('profile-pictures/$nomeImg').delete();
     _usuario!.imagem = '';
     _usuarioService.update(_firebaseAuth.currentUser!.uid, {'imagem': ''});
+  }
+
+  Future getImagem() async {
+    await _setUsuario();
+    return _usuario?.toMap()['imagem'];
   }
 
   Future verificaUsername() async {

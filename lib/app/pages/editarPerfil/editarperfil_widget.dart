@@ -1,4 +1,5 @@
 import 'package:buyk_app/app/app_colors.dart';
+import 'package:buyk_app/app/pages/editarPerfil/components/editarfoto_editarperfil_widget.dart';
 import 'package:buyk_app/app/pages/editarPerfil/editarperfil_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -79,7 +80,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
         child: Align(
           alignment: Alignment.center,
           child: FutureBuilder(
-            future: _editarPerfilController.memoizer.runOnce(() async => await _editarPerfilController.getDados()),
+            future: _editarPerfilController.memoizer.runOnce(() => _editarPerfilController.getDados()),
             builder: (context, snapshot) {
               if(snapshot.hasData) {
                 Map dados = snapshot.data as Map;
@@ -89,7 +90,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
                     child: Column(
                       children: [
                         tituloEditar(),
-                        fotoEditar(dados['imagem']),
+                        const EditarFotoPerfil(),
                         nomeEditar(dados['nome']),
                         sobrenomeEditar(dados['sobrenome']),
                         usernameEditar(dados['username']),
@@ -123,71 +124,6 @@ class _EditarPerfilState extends State<EditarPerfil> {
           color: GlobalColors.deadGreen,
           fontSize: 30,
           fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget fotoEditar(String? img) {
-    return Container(
-      height: 200,
-      width: 200,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(100),
-        image: img!.isNotEmpty ?
-        DecorationImage(
-          image: Image.network(
-            img,
-            width: 200,
-            height: 200,
-            fit: BoxFit.cover,
-          ).image,
-        ) :
-        null,
-      ),
-      child: TextButton(
-        style: TextButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100),
-          ),
-          backgroundColor: img.isNotEmpty ?
-          Colors.transparent :
-          GlobalColors.deadGreen,
-        ),
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return SizedBox(
-                height: 120,
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: const Text('Escolha uma foto da galeria'),
-                      onTap: () {
-                        _editarPerfilController.editarImagem();
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      title: const Text('Remover foto'),
-                      onTap: () {
-                        _editarPerfilController.removerImagem();
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
-              );
-            }
-          );
-        },
-        child: img.isNotEmpty ?
-        Container() :
-        const Icon(
-          Icons.person_rounded,
-          size: 100,
-          color: Colors.black,
         ),
       ),
     );
