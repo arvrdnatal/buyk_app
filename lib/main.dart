@@ -1,9 +1,20 @@
+import 'package:buyk_app/app/app_colors.dart';
 import 'package:buyk_app/app/app_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: AppColors.black,
+      systemNavigationBarIconBrightness: Brightness.light
+    )
+  );
   try {
     await Firebase.initializeApp(
       options: const FirebaseOptions(

@@ -1,6 +1,4 @@
-import 'package:buyk_app/app/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class PaginaGetStarted extends StatelessWidget {
   final IconData? icone;
@@ -14,36 +12,30 @@ class PaginaGetStarted extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        getIcon(),
-        getText(),
+        _getIcon(context),
+        _getText(context),
       ],
     );
   }
 
-  Widget getIcon() {
-    if(icone == null) return Container();
-    return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 20,
-        top: 20,
-      ),
+  Widget _getIcon(BuildContext context) {
+    return icone == null ? Container() :
+    Padding(
+      padding: const EdgeInsets.only(bottom: 20),
       child: Icon(
         icone!,
-        color: GlobalColors.deadGreen,
+        color: Theme.of(context).primaryColor,
         size: 100,
       ),
     );
   }
 
-  Widget getText() {
-    if(texto == null) return Container();
-    return Text(
+  Widget _getText(BuildContext context) {
+    return texto == null ? Container() :
+    Text(
       texto!,
       textAlign: TextAlign.center,
-      style: GoogleFonts.raleway(
-        color: GlobalColors.deadGreen,
-        fontSize: 30,
-      ),
+      style: Theme.of(context).textTheme.headline2,
     );
   }
 }

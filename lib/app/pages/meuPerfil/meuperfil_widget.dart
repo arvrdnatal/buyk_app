@@ -1,7 +1,6 @@
-import 'package:buyk_app/app/app_colors.dart';
 import 'package:buyk_app/app/pages/meuPerfil/meuperfil_controller.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class MeuPerfil extends StatefulWidget {
   const MeuPerfil({Key? key}) : super(key: key);
@@ -11,217 +10,168 @@ class MeuPerfil extends StatefulWidget {
 }
 
 class _MeuPerfilState extends State<MeuPerfil> {
-  final MeuPerfilController _meuPerfilController = MeuPerfilController();
+  final _controller = MeuPerfilController();
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    _meuPerfilController.setStateController = () => setState(() {});
+    _controller.setSetState = (_) => setState(_);
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Align(
-          alignment: Alignment.center,
-          child: FutureBuilder(
-            future: _meuPerfilController.getDados(),
-            builder: (context, snapshot) {
-              if(snapshot.hasData) {
-                Map dados = snapshot.data as Map;
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      tituloPerfil(),
-                      botaoSairPerfil(),
-                      fotoPerfil(dados['imagem']),
-                      nomeCompletoPerfil(dados['nome'], dados['sobrenome']),
-                      usernamePerfil(dados['username']),
-                      botaoEditarPerfil(),
-                    ],
-                  ),
-                );
-              } else {
-                return const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF63911d)),
-                );
-              }
-            },
-          ),
-        ),
+      appBar: AppBar(
+        title: const Text('Meu Perfil'),
+        actions: [
+          IconButton(icon: const Icon(Icons.settings), onPressed: () => _controller.editarPerfil(context)),
+          IconButton(icon: const Icon(Icons.exit_to_app), onPressed: () => _controller.logoutUsuario(context)),
+        ]
       ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add_rounded),
+        onPressed: () => _controller.adicionarObra(context),
+      ),
+      body: FutureBuilder(
+        future: _controller.getDados(),
+        builder: (context, snapshot) {
+          if(snapshot.hasData) {
+            Map dados = snapshot.data as Map;
+            return Column(
+              children: [
+                _perfil(dados),
+                _tituloBiblioteca(),
+                _biblioteca(),
+              ],
+            );
+          } else {
+            return const Align(child: CircularProgressIndicator());
+          }
+        }
+      )
     );
   }
 
-  Widget tituloPerfil() {
-    return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 30,
-        top: 30,
-      ),
-      child: Text(
-        'Meu Perfil',
-        textAlign: TextAlign.center,
-        style: GoogleFonts.raleway(
-          color: GlobalColors.deadGreen,
-          fontSize: 30,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget botaoSairPerfil() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: TextButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text(
-                  'Sair',
-                  style: GoogleFonts.raleway(
-                    color: GlobalColors.lightGreen,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                content: Text(
-                  'Tem certeza que deseja sair?',
-                  style: GoogleFonts.raleway(
-                    color: GlobalColors.deadGreen,
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    child: Text(
-                      'Sim',
-                      style: GoogleFonts.raleway(
-                        color: GlobalColors.deadGreen,
-                      ),
-                    ),
-                    onPressed: () {
-                      _meuPerfilController.logoutUsuario(context);
-                    },
-                  ),
-                  TextButton(
-                    child: Text(
-                      'Cancelar',
-                      style: GoogleFonts.raleway(
-                        color: GlobalColors.deadGreen,
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
+  // build
+  Widget _perfil(Map dados) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _fotoPerfil(dados['imagem']),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _nomeCompletoPerfil(dados['nome'], dados['sobrenome']),
+                  _usernamePerfil(dados['username']),
+                  _pontosPerfil(),
                 ],
-              );
-            }
-          );
-        },
-        style: TextButton.styleFrom(
-          padding: const EdgeInsets.all(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.exit_to_app,
-              color: Color(0xFF99c302),
-            ),
-            Text(
-              ' Sair',
-              style: GoogleFonts.raleway(
-                color: GlobalColors.lightGreen,
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+          const Divider(),
+        ],
       ),
     );
   }
 
-  Widget fotoPerfil(String? img) {
-    return Container(
-      height: 200,
-      width: 200,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(100),
-        image: img!.isNotEmpty ?
-        DecorationImage(
-          image: Image.network(
-            img,
-            width: 200,
-            height: 200,
-            fit: BoxFit.cover,
-          ).image,
-        ) :
-        null,
-        color: img.isNotEmpty ?
-        Colors.transparent :
-        GlobalColors.deadGreen,
-      ),
-      child: img.isNotEmpty ?
-      Container() :
-      const Icon(
-        Icons.person_rounded,
-        size: 100,
-        color: Colors.black,
-      ),
-    );
-  }
-
-  Widget nomeCompletoPerfil(String? nome, String? sobrenome) {
-    String? nomeCompleto = (nome!.isNotEmpty) ? nome : '';
-    nomeCompleto += (nome.isNotEmpty && sobrenome!.isNotEmpty) ? ' ' : '';
-    nomeCompleto += (sobrenome!.isNotEmpty) ? sobrenome : '';
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: Text(
-        nomeCompleto,
-        style: GoogleFonts.raleway(
-          color: GlobalColors.deadGreen,
-          fontSize: 25,
-        ),
-      ),
-    );
-  }
-
-  Widget usernamePerfil(String username) {
+  Widget _tituloBiblioteca() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
-      child: Text(
-        '@$username',
-        style: GoogleFonts.raleway(
-          color: GlobalColors.deadGreen,
-          fontSize: 15,
-        ),
-      ),
+      child: Text('Minha Biblioteca'.toUpperCase(), style: Theme.of(context).textTheme.headline2),
     );
   }
 
-  Widget botaoEditarPerfil() {
-    return TextButton(
-      onPressed: () {
-        _meuPerfilController.editarPerfil(context);
-      },
-      style: TextButton.styleFrom(
-        padding: const EdgeInsets.all(10),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.settings,
-            color: Color(0xFF99c302),
+  Widget _biblioteca() {
+    return Expanded(
+      child: GridView.count(
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        crossAxisCount: 3,
+        padding: const EdgeInsets.only(right: 20, left: 20),
+        childAspectRatio: (512 * 0.25) / (800 * 0.25),
+        children: const [
+          DecoratedBox(
+            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.amber),
+            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
           ),
-          Text(
-            ' Editar Perfil',
-            style: GoogleFonts.raleway(
-              color: GlobalColors.lightGreen,
-            ),
+          DecoratedBox(
+            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.blue),
+            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.deepOrange),
+            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.teal),
+            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.pink),
+            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.lightGreen),
+            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.redAccent),
+            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.orange),
+            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.indigo),
+            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.red),
+            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.deepPurple),
+            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
           ),
         ],
       ),
     );
   }
+
+  // perfil
+  Widget _fotoPerfil(String? img) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 20),
+      child: GestureDetector(
+        onTap: () => _controller.cliqueImagem(context),
+        child: CircleAvatar(
+          minRadius: 50, maxRadius: 50,
+          backgroundColor: img!.isNotEmpty ? Colors.transparent : Theme.of(context).primaryColor,
+          child: img.isNotEmpty ?
+          ClipOval(
+            child: CachedNetworkImage(
+              imageUrl: img,
+              placeholder: (context, url) => const CircularProgressIndicator(),
+            ),
+          )
+          : Icon(Icons.person_rounded, size: 100, color: Theme.of(context).scaffoldBackgroundColor),
+        ),
+      ),
+    );
+  }
+
+  Widget _nomeCompletoPerfil(String? nome, String? sobrenome) {
+    String? nomeCompleto = ((nome!.isNotEmpty) ? nome : '') + ((nome.isNotEmpty && sobrenome!.isNotEmpty) ? ' ' : '') + ((sobrenome!.isNotEmpty) ? sobrenome : '');
+    return Text(nomeCompleto, style: Theme.of(context).textTheme.headline3);
+  }
+
+  Widget _usernamePerfil(String username) => Text('@$username');
+  Widget _pontosPerfil() => const Text('X pontos');
 }

@@ -1,19 +1,27 @@
-import 'package:buyk_app/app/pages/getStarted/components/pagina_getstarted_viewmodel.dart';
+import 'package:buyk_app/app/pages/getStarted/components/pagina_getstarted_widget.dart';
 import 'package:flutter/material.dart';
 
 class GetStartedController {
-  late final PaginaGetStartedViewModel _paginaGetStartedViewModel;
   final PageController _pageController = PageController();
   late final List<Widget> _paginas;
   int currentPage = 0;
 
   GetStartedController() {
-    _paginaGetStartedViewModel = PaginaGetStartedViewModel();
-    _paginas = _paginaGetStartedViewModel.getPaginasGetStarted();
+    _setPaginas();
   }
 
-  void navegarParaCadastro(BuildContext context) => Navigator.of(context).pushNamed('/cadastro');
-  void navegarParaLogin(BuildContext context) => Navigator.of(context).pushNamed('/login');
+  void cadastro(BuildContext context) => Navigator.of(context).pushNamed('/cadastro');
+  void login(BuildContext context) => Navigator.of(context).pushNamed('/login');
+
+  void _setPaginas() {
+    _paginas = [
+      const PaginaGetStarted(icone: Icons.insert_emoticon, texto: 'Diga olá para a BUYK!'),
+      const PaginaGetStarted(icone: Icons.auto_stories, texto: 'Leia e publique livros do jeitinho que você quiser'),
+      const PaginaGetStarted(icone: Icons.celebration, texto: 'Ganhe pontos por capítulo lido'),
+      const PaginaGetStarted(icone: Icons.shopping_cart, texto: 'Use esses pontos para comprar outros livros'),
+      const PaginaGetStarted(icone: Icons.attractions, texto: 'Divirta-se!'),
+    ];
+  }
 
   PageController get pageController => _pageController;
   List<Widget> get paginas => _paginas;

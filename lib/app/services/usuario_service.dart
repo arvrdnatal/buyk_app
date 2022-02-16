@@ -1,29 +1,16 @@
 import 'dart:convert';
 
-import 'package:buyk_app/app/models/usuario_model.dart';
 import 'package:buyk_app/app/services/interface_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class UsuarioService implements IServices<UsuarioModel> {
+class UsuarioService implements IServices {
   static final UsuarioService instance = UsuarioService._constructor();
   final CollectionReference _colection = FirebaseFirestore.instance.collection("usuarios");
 
   UsuarioService._constructor();
 
   @override
-  Future add(UsuarioModel objeto) async {
-    Map mapObjeto = objeto.toMap();
-    Map<String, dynamic> usuario = {
-      'email': mapObjeto['email'],
-      'senha': mapObjeto['senha'],
-      'username': mapObjeto['username'],
-    };
-    if(mapObjeto['nome']!.isNotEmpty) usuario['nome'] = mapObjeto['nome'];
-    if(mapObjeto['sobrenome']!.isNotEmpty) usuario['sobrenome'] = mapObjeto['sobrenome'];
-    if(mapObjeto['imagem']!.isNotEmpty) usuario['imagem'] = mapObjeto['imagem'];
-
-    _colection.doc(mapObjeto['id']).set(usuario);
-  }
+  Future add(String id, Map objeto) async => _colection.doc(id).set(objeto);
 
   @override
   Future delete(String id) async => _colection.doc(id).delete();

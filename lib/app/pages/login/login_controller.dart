@@ -4,14 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginController {
-  // services
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final UsuarioService _usuarioService = UsuarioService.instance;
-  // controllers
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
-  // variáveis
-  dynamic _setState;
   dynamic _mensagemValidacaoEmail;
   dynamic _mensagemValidacaoSenha;
   bool _isCheckingEmail = false;
@@ -19,7 +15,7 @@ class LoginController {
 
   LoginController();
 
-  Future verificaEmail() async {
+  Future verificaEmail(dynamic setState) async {
     String email = _emailController.text;
     _mensagemValidacaoEmail = null;
     if(email.isEmpty) {
@@ -27,8 +23,7 @@ class LoginController {
     } else if(!EmailValidator.validate(email)) {
       _mensagemValidacaoEmail = 'O e-mail digitado é inválido';
     } else {
-      _isCheckingEmail = true;
-      _setState();
+      setState(() => _isCheckingEmail = true);
 
       List<String> emails = [];
       for(var usuario in await _usuarioService.getAll()) {
@@ -36,12 +31,11 @@ class LoginController {
       }
 
       if(!emails.contains(email)) _mensagemValidacaoEmail = 'O email digitado não existe';
-      _isCheckingEmail = false;
+      setState(() => _isCheckingEmail = false);
     }
-    _setState();
   }
 
-  Future verificaSenha() async {
+  Future verificaSenha(dynamic setState) async {
     String senha = _senhaController.text;
     _mensagemValidacaoSenha = null;
     if(senha.isEmpty) _mensagemValidacaoSenha = 'O campo senha não pode ficar vazio';
@@ -50,32 +44,24 @@ class LoginController {
       if(usuario['email'] == _emailController.text) {
         if(senha != usuario['senha']) {
           _mensagemValidacaoSenha = 'Senha incorreta';
-          _setState();
+          setState(() {});
           return;
         }
       }
     }
   }
 
-  Future vizualizarSenha() async {
-    _senhaObscureText = !_senhaObscureText;
-    _setState();
-  }
+  Future vizualizarSenha(dynamic setState) async => setState(() => _senhaObscureText = !_senhaObscureText);
 
-  Future logarUsuario(GlobalKey<FormState> _formKey, BuildContext contextState) async {
-    verificaEmail();
-    verificaSenha();
-    if (_formKey.currentState!.validate()) {
-      firebaseAuth.signInWithEmailAndPassword(
+  void logarUsuario({required GlobalKey<FormState> formKey, required BuildContext context, required dynamic setState}) {
+    verificaEmail(setState);
+    verificaSenha(setState);
+    if (formKey.currentState!.validate()) {
+      _firebaseAuth.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _senhaController.text,
-      ).then((_) {
-        Navigator.of(contextState).pushNamedAndRemoveUntil('/inicio', (route) => false);
-      }).catchError((error) {
-        ScaffoldMessenger.of(contextState).showSnackBar(
-          SnackBar(content: Text(error.toString())),
-        );
-      });
+      ).then((_) => Navigator.of(context).pushNamedAndRemoveUntil('/mercadinho', (route) => false))
+      .catchError((error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString()))));
     }
   }
 
@@ -85,5 +71,4 @@ class LoginController {
   bool get senhaObscureText => _senhaObscureText;
   TextEditingController get emailController => _emailController;
   TextEditingController get senhaController => _senhaController;
-  set setStateController(Function() funcao) => _setState = funcao;
 }

@@ -1,36 +1,30 @@
-import 'package:buyk_app/app/models/usuario_model.dart';
 import 'package:buyk_app/app/services/usuario_service.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CadastroController {
-  // services
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final UsuarioService _usuarioService = UsuarioService.instance;
-  // controllers
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _sobrenomeController = TextEditingController();
-  // variáveis
   dynamic _mensagemValidacaoEmail;
   dynamic _mensagemValidacaoUsername;
-  dynamic _setState;
   bool _isCheckingEmail = false;
   bool _isCheckingUsername = false;
 
   CadastroController();
 
-  Future verificaEmail() async {
+  Future verificaEmail(dynamic setState) async {
     String email = _emailController.text;
     _mensagemValidacaoEmail = null;
     if(email.isEmpty) _mensagemValidacaoEmail = 'O campo e-mail é obrigatório';
     if(!EmailValidator.validate(email)) _mensagemValidacaoEmail = 'O e-mail digitado é inválido';
 
-    _isCheckingEmail = true;
-    _setState();
+    setState(() => _isCheckingEmail = true);
 
     List<String> emails = [];
     for(var usuario in await _usuarioService.getAll()) {
@@ -38,23 +32,22 @@ class CadastroController {
     }
 
     if(emails.contains(email)) _mensagemValidacaoEmail = 'O email já está sendo utilizado';
-    _isCheckingEmail = false;
-    _setState();
+    setState(() => _isCheckingEmail = false);
   }
 
   String? verificaSenha(String senha) {
     if(senha.isEmpty) return 'O campo senha é obrigatório';
     if(senha.length < 6) return 'A senha precisa de no mínimo 6 caracteres';
+    return null;
   }
 
-  Future verificaUsername() async {
+  Future verificaUsername(dynamic setState) async {
     String username = _usernameController.text;
     _mensagemValidacaoUsername = null;
     if(username.isEmpty) _mensagemValidacaoUsername = 'O campo username é obrigatório';
     if (username.contains(' ')) _mensagemValidacaoUsername = 'O nome de usuário não deve conter espaços';
 
-    _isCheckingUsername = true;
-    _setState();
+    setState(() => _isCheckingUsername = true);
 
     List<String> usernames = [];
     for(var usuario in await _usuarioService.getAll()) {
@@ -62,35 +55,25 @@ class CadastroController {
     }
 
     if(usernames.contains(username)) _mensagemValidacaoUsername = 'O usuário $username já existe';
-    _isCheckingUsername = false;
-    _setState();
+    setState(() => _isCheckingUsername = false);
   }
 
-  registrarUsuario(GlobalKey<FormState> _formKey, BuildContext contextState) async {
-    verificaEmail();
-    verificaUsername();
-    if (_formKey.currentState!.validate()) {
-      firebaseAuth.createUserWithEmailAndPassword(
+  void registrarUsuario({required GlobalKey<FormState> formKey, required BuildContext context, required dynamic setState}) {
+    verificaEmail(setState);
+    verificaUsername(setState);
+    if (formKey.currentState!.validate()) {
+      _firebaseAuth.createUserWithEmailAndPassword(
         email: _emailController.text,
-        password: _senhaController.text,
+        password: _senhaController.text
       ).then((result) {
-        UsuarioModel usuario = UsuarioModel(
-          id: result.user!.uid,
-          nome: _nomeController.text,
-          sobrenome: _sobrenomeController.text,
-          email: _emailController.text,
-          senha: _senhaController.text,
-          username: _usernameController.text,
-          imagem: '',
-        );
-        _usuarioService.add(usuario).then((_) {
-          Navigator.of(contextState).pushNamedAndRemoveUntil('/inicio', (route) => false);
-        });
-      }).catchError((err) {
-        ScaffoldMessenger.of(contextState).showSnackBar(
-          SnackBar(content: Text(err.toString())),
-        );
-      });
+        return _usuarioService.add(result.user!.uid, {
+          'nome': _nomeController.text,
+          'sobrenome': _sobrenomeController.text,
+          'email': _emailController.text,
+          'senha': _senhaController.text,
+          'username': _usernameController.text,
+        }).then((_) => Navigator.of(context).pushNamedAndRemoveUntil('/mercadinho', (route) => false));
+      }).catchError((error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString()))));
     }
   }
 
@@ -103,5 +86,4 @@ class CadastroController {
   TextEditingController get senhaController => _senhaController;
   TextEditingController get nomeController => _nomeController;
   TextEditingController get sobrenomeController => _sobrenomeController;
-  set setStateController(Function() funcao) => _setState = funcao;
 }
