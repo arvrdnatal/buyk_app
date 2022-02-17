@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class AppWidget extends StatelessWidget {
   AppWidget({Key? key}) : super(key: key);
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final _firebaseAuth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {

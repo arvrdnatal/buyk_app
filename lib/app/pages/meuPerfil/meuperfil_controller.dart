@@ -12,10 +12,10 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class MeuPerfilController {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instanceFor(app: Firebase.app());
-  final UsuarioService _usuarioService = UsuarioService.instance;
-  final AsyncMemoizer _memoizer = AsyncMemoizer();
+  final _firebaseAuth = FirebaseAuth.instance;
+  final _firebaseStorage = FirebaseStorage.instanceFor(app: Firebase.app());
+  final _usuarioService = UsuarioService.instance;
+  final _memoizer = AsyncMemoizer();
   dynamic _setState;
   dynamic _usuario;
 

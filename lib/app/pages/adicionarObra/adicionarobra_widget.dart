@@ -54,7 +54,7 @@ class _AdicionarObraState extends State<AdicionarObra> {
 
   Widget _botaoAdicionar() {
     return AppStyles.getElevatedButton(
-      onPressed: () {},
+      onPressed: () => _controller.enviarObra(_formKey, context),
       texto: 'Adicionar',
     );
   }
@@ -119,6 +119,7 @@ class _AdicionarObraState extends State<AdicionarObra> {
           controller: _controller.arquivoController,
           texto: 'Arquivo',
           readOnly: true,
+          validator: (_) => _controller.verificaArquivo(),
         ),
         AppStyles.getTextButton(
           onPressed: () => _controller.adicionarArquivo(),

@@ -6,11 +6,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class EditarPerfilController {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final UsuarioService _usuarioService = UsuarioService.instance;
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _nomeController = TextEditingController();
-  final TextEditingController _sobrenomeController = TextEditingController();
+  final _firebaseAuth = FirebaseAuth.instance;
+  final _usuarioService = UsuarioService.instance;
+  final _usernameController = TextEditingController();
+  final _nomeController = TextEditingController();
+  final _sobrenomeController = TextEditingController();
   dynamic _setState;
   dynamic _mensagemValidacaoUsername;
   dynamic _usuario;

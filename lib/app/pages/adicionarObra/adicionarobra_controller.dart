@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:buyk_app/app/services/usuario_service.dart';
+import 'package:buyk_app/app/services/obra_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,25 +10,18 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AdicionarObraController {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instanceFor(app: Firebase.app());
-  final UsuarioService _usuarioService = UsuarioService.instance;
-  final TextEditingController _tituloController = TextEditingController();
-  final TextEditingController _sinopseController = TextEditingController();
-  final TextEditingController _pontosController = TextEditingController();
-  final TextEditingController _arquivoController = TextEditingController(text: 'Nenhum'.toUpperCase());
+  final _firebaseAuth = FirebaseAuth.instance;
+  final _firebaseStorage = FirebaseStorage.instanceFor(app: Firebase.app());
+  final _obraService = ObraService.instance;
+  final _tituloController = TextEditingController();
+  final _sinopseController = TextEditingController();
+  final _pontosController = TextEditingController();
+  final _arquivoController = TextEditingController(text: 'Nenhum'.toUpperCase());
+  late File _arquivo;
   dynamic _setState;
-  dynamic _usuario;
   dynamic _img;
 
-  AdicionarObraController() {
-    _setUsuario();
-  }
-
-  Future _setUsuario() async {
-    _usuario = jsonDecode(jsonEncode((await _usuarioService.get(_firebaseAuth.currentUser!.uid))));
-    _setState(() {});
-  }
+  AdicionarObraController();
 
   Future editarImagem(BuildContext context) async {
     XFile? img = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -72,13 +64,40 @@ class AdicionarObraController {
   }
 
   Future adicionarArquivo() async {
-    FilePickerResult? picked = await FilePicker.platform.pickFiles(
-      // type: FileType.custom,
-      // allowedExtensions: ['epub'],
-    );
-
+    FilePickerResult? picked = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['epub']);
     if(picked != null) {
-      print(picked.files.first.name);
+      _arquivoController.text = picked.files.first.name;
+      _arquivo = File(picked.files.first.path!);
+      _setState(() {});
+    }
+  }
+
+  String? verificaArquivo() {
+    if(_arquivoController.text == 'NENHUM') return 'Um arquivo deve ser selecionado';
+    return null;
+  }
+
+  Future enviarObra(GlobalKey<FormState> formKey, BuildContext context) async {
+    if(formKey.currentState!.validate()) {
+      String nomeGeral = _tituloController.text.replaceAll(' ', '_');
+      Map<String, dynamic> infosObra = {};
+      if (_img != null) {
+        String nomeImg = 'bc-' + _tituloController.text.replaceAll(' ', '_');
+        Reference reference = _firebaseStorage.ref().child('books/$nomeGeral/$nomeImg');
+        TaskSnapshot taskSnapshot = await reference.putFile(_img);
+        infosObra['capa_livro'] = await taskSnapshot.ref.getDownloadURL();
+      }
+      String nomeArq = 'epub-' + _tituloController.text.replaceAll(' ', '_');
+      Reference reference = _firebaseStorage.ref().child('books/$nomeGeral/$nomeArq');
+      TaskSnapshot taskSnapshot = await reference.putFile(_arquivo);
+      infosObra['arquivo'] = await taskSnapshot.ref.getDownloadURL();
+      infosObra.addEntries({
+        'titulo': _tituloController.text,
+        'sinopse': _sinopseController.text,
+        'preco': _pontosController.text,
+        'autor': _firebaseAuth.currentUser!.uid,
+      }.entries);
+      _obraService.add(infosObra).then((_) => Navigator.of(context).pushNamed('/mercadinho')).catchError((error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString()))));
     }
   }
 

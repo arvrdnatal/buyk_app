@@ -66,7 +66,8 @@ class CadastroController {
         email: _emailController.text,
         password: _senhaController.text
       ).then((result) {
-        return _usuarioService.add(result.user!.uid, {
+        return _usuarioService.add({
+          'id': result.user!.uid,
           'nome': _nomeController.text,
           'sobrenome': _sobrenomeController.text,
           'email': _emailController.text,
