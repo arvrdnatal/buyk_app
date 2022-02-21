@@ -22,7 +22,17 @@ class UsuarioService implements IServices {
   @override
   Future update(String id, Map<String, dynamic> info) async {
       Map<String,dynamic> usuario = jsonDecode(jsonEncode((await _colection.doc(id).get()).data()));
+      List biblioteca = [];
+      if(usuario.containsKey('biblioteca')) {
+        biblioteca.addAll(usuario['biblioteca']);
+        usuario.remove('biblioteca');
+      }
+      if(info.containsKey('biblioteca')) {
+        biblioteca.addAll(info['biblioteca']);
+        info.remove('biblioteca');
+      }
       usuario.addEntries(info.entries);
+      usuario['biblioteca'] = biblioteca;
       usuario.removeWhere((key, value) => (value == '') || (value == null));
       _colection.doc(id).set(usuario);
   }
@@ -38,6 +48,8 @@ class UsuarioService implements IServices {
       'senha': data['senha'],
       'username': data['username'],
       'imagem': (data.containsKey('imagem') ? data['imagem'] : ''),
+      'pontos': data['pontos'],
+      'biblioteca': data['biblioteca'],
     };
   }
 

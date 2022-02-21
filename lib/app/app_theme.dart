@@ -74,6 +74,14 @@ class AppTheme {
         errorBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
         focusedErrorBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
       ),
+      // drawer
+      drawerTheme: DrawerThemeData(
+        backgroundColor: AppColors.black,
+      ),
+      // list title
+      listTileTheme: ListTileThemeData(
+        textColor: AppColors.deadGreen,
+      ),
     );
   }
 }

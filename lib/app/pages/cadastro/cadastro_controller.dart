@@ -73,6 +73,8 @@ class CadastroController {
           'email': _emailController.text,
           'senha': _senhaController.text,
           'username': _usernameController.text,
+          'pontos': 2000,
+          'biblioteca': [],
         }).then((_) => Navigator.of(context).pushNamedAndRemoveUntil('/mercadinho', (route) => false));
       }).catchError((error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString()))));
     }

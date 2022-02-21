@@ -3,9 +3,11 @@ import 'package:buyk_app/app/pages/cadastro/cadastro_widget.dart';
 import 'package:buyk_app/app/pages/editarPerfil/editarperfil_widget.dart';
 import 'package:buyk_app/app/pages/getStarted/getstarted_widget.dart';
 import 'package:buyk_app/app/pages/infoNovaObra/infonovaobra_widget.dart';
+import 'package:buyk_app/app/pages/leitor/leitor_widget.dart';
 import 'package:buyk_app/app/pages/login/login_widget.dart';
 import 'package:buyk_app/app/pages/mercadinho/mercadinho_widget.dart';
 import 'package:buyk_app/app/pages/meuPerfil/meuperfil_widget.dart';
+import 'package:buyk_app/app/pages/verObra/verobra_widget.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
@@ -18,5 +20,7 @@ class AppRoutes {
     '/editarperfil': (context) => const EditarPerfil(),
     '/adicionarobra': (context) => const AdicionarObra(),
     '/infonovaobra': (context) => const InfoNovaObra(),
+    '/verobra': (context) => const VerObra(),
+    '/leitor': (context) => const Leitor(),
   };
 }

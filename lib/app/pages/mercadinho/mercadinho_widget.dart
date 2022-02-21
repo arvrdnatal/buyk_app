@@ -1,4 +1,5 @@
 import 'package:buyk_app/app/pages/mercadinho/mercadinho_controller.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class Mercadinho extends StatefulWidget {
@@ -13,6 +14,7 @@ class _MercadinhoState extends State<Mercadinho> {
 
   @override
   Widget build(BuildContext context) {
+    _controller.setSetState = (_) => setState(_);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mercadinho'),
@@ -25,12 +27,30 @@ class _MercadinhoState extends State<Mercadinho> {
         child: const Icon(Icons.add_rounded),
         onPressed: () => _controller.adicionarObra(context),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _tituloRecentes(),
-          _livrosRecentes(),
-        ],
+      body: RefreshIndicator(
+        onRefresh: () async => setState(() {}),
+        child: FutureBuilder(
+          future: _controller.carregarObras(),
+          builder: (context, snapshot) {
+            if(snapshot.hasData) {
+              Map dados = snapshot.data as Map;
+              return NotificationListener<OverscrollIndicatorNotification>(
+                onNotification: ((overscroll) {
+                  overscroll.disallowIndicator();
+                  return overscroll.leading;
+                }),
+                child: ListView(
+                  children: [
+                    _tituloRecentes(),
+                    _livrosRecentes(dados),
+                  ],
+                ),
+              );
+            } else {
+              return const Align(child: CircularProgressIndicator());
+            }
+          },
+        ),
       ),
     );
   }
@@ -42,105 +62,39 @@ class _MercadinhoState extends State<Mercadinho> {
     );
   }
 
-  Widget _livrosRecentes() {
-    return Expanded(
-      child: GridView.count(
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        crossAxisCount: 3,
-        padding: const EdgeInsets.only(right: 20, left: 20),
-        childAspectRatio: (512 * 0.25) / (800 * 0.25),
-        children: const [
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.amber),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
+  Widget _livrosRecentes(Map dados) {
+    List<Widget> obras = [];
+    dados.forEach((id, info) {
+      obras.add(
+        GestureDetector(
+          onTap: () => _controller.verObra(context, id, info),
+          child: Hero(
+            tag: id,
+            child: DecoratedBox(
+              decoration: BoxDecoration(borderRadius: const BorderRadiusDirectional.all(Radius.circular(2)), color: info['capa_livro'] != null ? Colors.transparent : Theme.of(context).primaryColor),
+              child: SizedBox(
+                height: 800 * 0.25, width: 512 * 0.25,
+                child: info['capa_livro'] == null ?
+                Icon(Icons.image_not_supported, color: Theme.of(context).scaffoldBackgroundColor) :
+                CachedNetworkImage(
+                  imageUrl: info['capa_livro'],
+                  placeholder: (context, url) => const Align(child: CircularProgressIndicator()),
+                ),
+              ),
+            ),
           ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.blue),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.deepOrange),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.teal),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.pink),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.lightGreen),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.redAccent),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.orange),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.indigo),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.red),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.deepPurple),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.amber),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.blue),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.deepOrange),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.teal),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.pink),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.lightGreen),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.redAccent),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.orange),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.indigo),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.red),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.all(Radius.circular(2)), color: Colors.deepPurple),
-            child: SizedBox(height: 800 * 0.25, width: 512 * 0.25),
-          ),
-        ],
-      ),
+        ),
+      );
+    });
+    return GridView.count(
+      shrinkWrap: true,
+      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
+      crossAxisCount: 3,
+      padding: const EdgeInsets.only(right: 20, left: 20),
+      childAspectRatio: (512 * 0.25) / (800 * 0.25),
+      children: obras,
+      physics: const NeverScrollableScrollPhysics(),
     );
   }
 }

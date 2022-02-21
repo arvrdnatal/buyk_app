@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:buyk_app/app/services/obra_service.dart';
+import 'package:epub_viewer/epub_viewer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,7 +18,7 @@ class AdicionarObraController {
   final _sinopseController = TextEditingController();
   final _pontosController = TextEditingController();
   final _arquivoController = TextEditingController(text: 'Nenhum'.toUpperCase());
-  late File _arquivo;
+  dynamic _arquivo;
   dynamic _setState;
   dynamic _img;
 
@@ -67,6 +68,7 @@ class AdicionarObraController {
     FilePickerResult? picked = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['epub']);
     if(picked != null) {
       _arquivoController.text = picked.files.first.name;
+      // EpubViewer.open(picked.files.first.path!);
       _arquivo = File(picked.files.first.path!);
       _setState(() {});
     }
@@ -79,6 +81,11 @@ class AdicionarObraController {
 
   Future enviarObra(GlobalKey<FormState> formKey, BuildContext context) async {
     if(formKey.currentState!.validate()) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const AlertDialog(title: Text('Aguarde...'), content: LinearProgressIndicator()),
+      );
       String nomeGeral = _tituloController.text.replaceAll(' ', '_');
       Map<String, dynamic> infosObra = {};
       if (_img != null) {
@@ -94,7 +101,7 @@ class AdicionarObraController {
       infosObra.addEntries({
         'titulo': _tituloController.text,
         'sinopse': _sinopseController.text,
-        'preco': _pontosController.text,
+        'preco': int.parse(_pontosController.text),
         'autor': _firebaseAuth.currentUser!.uid,
       }.entries);
       _obraService.add(infosObra).then((_) => Navigator.of(context).pushNamed('/mercadinho')).catchError((error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString()))));

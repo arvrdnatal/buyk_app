@@ -20,7 +20,7 @@ class _AdicionarObraState extends State<AdicionarObra> {
       appBar: AppBar(
         title: const Text('Adicionar Obra'),
         actions: [
-          IconButton(icon: const Icon(Icons.info), onPressed: () => _controller.info(context))
+          IconButton(icon: const Icon(Icons.info), onPressed: () => _controller.info(context)),
         ],
       ),
       body: Align(
