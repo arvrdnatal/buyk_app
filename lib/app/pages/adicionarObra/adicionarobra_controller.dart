@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:buyk_app/app/services/obra_service.dart';
-import 'package:epub_viewer/epub_viewer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -68,7 +67,6 @@ class AdicionarObraController {
     FilePickerResult? picked = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['epub']);
     if(picked != null) {
       _arquivoController.text = picked.files.first.name;
-      // EpubViewer.open(picked.files.first.path!);
       _arquivo = File(picked.files.first.path!);
       _setState(() {});
     }

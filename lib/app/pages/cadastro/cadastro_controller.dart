@@ -75,7 +75,17 @@ class CadastroController {
           'username': _usernameController.text,
           'pontos': 2000,
           'biblioteca': [],
-        }).then((_) => Navigator.of(context).pushNamedAndRemoveUntil('/mercadinho', (route) => false));
+        }).then((_) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => const AlertDialog(title: Text('Aguarde...'), content: LinearProgressIndicator()),
+          );
+          return result.user!.sendEmailVerification().then((_) {
+            Navigator.of(context).pop();
+            return Navigator.of(context).pop();
+          });
+        });
       }).catchError((error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString()))));
     }
   }

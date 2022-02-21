@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:buyk_app/app/app_styles.dart';
 import 'package:buyk_app/app/services/usuario_service.dart';
-import 'package:epub_viewer/epub_viewer.dart';
 import 'package:epubx/epubx.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,78 +16,88 @@ class VerObraController {
   VerObraController();
 
   Future comprarObra(BuildContext context, Map info) async {
-    if(info['autor'] == _firebaseAuth.currentUser!.uid) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Atenção'),
-            content: const Text('Esta obra foi publicada por você!'),
-            actions: [
-              AppStyles.getTextButton(
-                texto: 'Ok',
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const AlertDialog(title: Text('Aguarde...'), content: LinearProgressIndicator()),
-      );
-      Map usuario = _usuarioService.get(_firebaseAuth.currentUser!.uid) as Map;
-      List bibliotecaPrivada = usuario['biblioteca'] as List;
-      if(!bibliotecaPrivada.contains(info['id']))  {
-        if(usuario['pontos'] < info['preco']) {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Atenção'),
-                content: const Text('Você não tem pontos suficientes para comprar a obra!'),
-                actions: [
-                  AppStyles.getTextButton(
-                    texto: 'Ok',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          Map<String,dynamic> update = {
-            'pontos': usuario['pontos'] - info['preco'],
-            'biblioteca': [info['id']],
-          };
-          _usuarioService.update(_firebaseAuth.currentUser!.uid, update).then((_) {
-            String titulo = info['titulo'];
-            Navigator.of(context).pop();
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: const Text('Parabéns'),
-                  content: Text('Você acaba de adquirir um novo livro ($titulo)!'),
-                  actions: [
-                    AppStyles.getTextButton(
-                      texto: 'Ok',
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const AlertDialog(title: Text('Aguarde...'), content: LinearProgressIndicator()),
+    );
+    Map<String,dynamic> usuario = await _usuarioService.get(_firebaseAuth.currentUser!.uid) as Map<String,dynamic>;
+    List bibliotecaPrivada = usuario['biblioteca'] as List;
+    if(!bibliotecaPrivada.contains(info['id']))  {
+      if(usuario['pontos'] < info['preco']) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Atenção'),
+              content: const Text('Você não tem pontos suficientes para comprar a obra!'),
+              actions: [
+                AppStyles.getTextButton(
+                  texto: 'Ok',
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
             );
-          });
-        }
+          },
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Atenção'),
+              content: const Text('Tem certeza que deseja comprar esta obra?'),
+              actions: [
+                AppStyles.getTextButton(
+                  texto: 'Sim',
+                  onPressed: () async {
+                    Map<String,dynamic> autor = await _usuarioService.get(info['autor']) as Map<String,dynamic>;
+                    Map<String,dynamic> updateUser = {
+                      'pontos': usuario['pontos'] - info['preco'],
+                      'biblioteca': [info['id']],
+                    };
+                    Map<String,dynamic> updateAutor = {'pontos': autor['pontos'] + info['preco']};
+                    _usuarioService.update(_firebaseAuth.currentUser!.uid, updateUser).then((_) {
+                      _usuarioService.update(info['autor'], updateAutor).then((_) {
+                        String titulo = info['titulo'];
+                        Navigator.of(context).pop();
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Parabéns'),
+                              content: Text('Você acaba de adquirir um novo livro ($titulo)!'),
+                              actions: [
+                                AppStyles.getTextButton(
+                                  texto: 'Ok',
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      });
+                    });
+                  },
+                ),
+                AppStyles.getTextButton(
+                  texto: 'Não',
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       }
     }
   }
@@ -106,6 +114,6 @@ class VerObraController {
     await _firebaseStorage.refFromURL(info['arquivo']).writeToFile(file);
     List<int> bytes = await file.readAsBytes();
     EpubBook epubBook = await EpubReader.readBook(bytes);
-    Navigator.of(context).pushNamed('/leitor', arguments: epubBook);
+    Navigator.of(context).pushNamed('/leitor', arguments: info);
   }
 }

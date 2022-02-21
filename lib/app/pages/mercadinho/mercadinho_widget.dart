@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:buyk_app/app/pages/mercadinho/mercadinho_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 
 class Mercadinho extends StatefulWidget {
@@ -56,9 +59,11 @@ class _MercadinhoState extends State<Mercadinho> {
   }
 
   Widget _tituloRecentes() {
+    String teste = 'Veja as novidades:';
+    // (md5.convert(utf8.encode(teste)).toString());
     return Padding(
       padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
-      child: Text('Veja as novidades:', style: Theme.of(context).textTheme.headline3),
+      child: Text(teste, style: Theme.of(context).textTheme.headline3),
     );
   }
 

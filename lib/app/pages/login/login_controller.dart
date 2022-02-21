@@ -1,3 +1,4 @@
+import 'package:buyk_app/app/app_styles.dart';
 import 'package:buyk_app/app/services/usuario_service.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -58,10 +59,35 @@ class LoginController {
     verificaSenha(setState);
     if (formKey.currentState!.validate()) {
       _firebaseAuth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _senhaController.text,
-      ).then((_) => Navigator.of(context).pushNamedAndRemoveUntil('/mercadinho', (route) => false))
-      .catchError((error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString()))));
+          email: _emailController.text,
+          password: _senhaController.text,
+        ).then((result) {
+          if (result.user!.emailVerified) {
+            return Navigator.of(context).pushNamedAndRemoveUntil('/mercadinho', (route) => false);
+          } else {
+            return showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text('Atenção'),
+                  content: const Text('Você ainda não verificou seu email. Gostaria de reenviar a verificação?'),
+                  actions: [
+                    AppStyles.getTextButton(
+                      texto: 'Sim',
+                      onPressed: () {
+                        result.user!.sendEmailVerification().then((_) => Navigator.of(context).pop());
+                      },
+                    ),
+                    AppStyles.getTextButton(
+                      texto: 'Não',
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        }).catchError((error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString()))));
     }
   }
 
