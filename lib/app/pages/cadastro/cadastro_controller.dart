@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:buyk_app/app/services/usuario_service.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -64,14 +66,14 @@ class CadastroController {
     if (formKey.currentState!.validate()) {
       _firebaseAuth.createUserWithEmailAndPassword(
         email: _emailController.text,
-        password: _senhaController.text
+        password: _senhaController.text,
       ).then((result) {
         return _usuarioService.add({
           'id': result.user!.uid,
           'nome': _nomeController.text,
           'sobrenome': _sobrenomeController.text,
           'email': _emailController.text,
-          'senha': _senhaController.text,
+          'senha': base64Url.encode(utf8.encode(_senhaController.text)),
           'username': _usernameController.text,
           'pontos': 2000,
           'biblioteca': [],

@@ -2,16 +2,19 @@ import 'dart:io';
 
 import 'package:buyk_app/app/app_styles.dart';
 import 'package:buyk_app/app/services/usuario_service.dart';
+import 'package:epub_viewer/epub_viewer.dart';
 import 'package:epubx/epubx.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:starlight_epub_viewer/starlight_epub_viewer.dart';
 
 class VerObraController {
   final _firebaseAuth = FirebaseAuth.instance;
   final _firebaseStorage = FirebaseStorage.instanceFor(app: Firebase.app());
   final _usuarioService = UsuarioService.instance;
+  dynamic _setState;
 
   VerObraController();
 
@@ -74,9 +77,7 @@ class VerObraController {
                                 AppStyles.getTextButton(
                                   texto: 'Ok',
                                   onPressed: () {
-                                    Navigator.of(context).pop();
-                                    Navigator.of(context).pop();
-                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pushNamedAndRemoveUntil('/mercadinho', (route) => false);
                                   },
                                 ),
                               ],
@@ -112,8 +113,19 @@ class VerObraController {
     String nome = _firebaseStorage.refFromURL(info['arquivo']).name;
     var file = File('${tempDir.path}/$nome');
     await _firebaseStorage.refFromURL(info['arquivo']).writeToFile(file);
-    List<int> bytes = await file.readAsBytes();
-    EpubBook epubBook = await EpubReader.readBook(bytes);
-    Navigator.of(context).pushNamed('/leitor', arguments: info);
+    info['arquivo_file'] = file;
+
+    StarlightEpubViewer.setConfig(
+      themeColor: Theme.of(context).primaryColor,
+      nightMode: true,
+      scrollDirection: StarlightEpubViewerScrollDirection.ALLDIRECTIONS,
+      allowSharing: false,
+      enableTts: false,
+      setShowRemainingIndicator: true,
+    );
+    StarlightEpubViewer.open(file.path);
+    // Navigator.of(context).pushNamed('/leitor', arguments: info);
   }
+
+  set setSetState(dynamic function) => _setState = function;
 }

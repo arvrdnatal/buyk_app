@@ -15,6 +15,7 @@ class _VerObraState extends State<VerObra> {
 
   @override
   Widget build(BuildContext context) {
+    _controller.setSetState = (_) => setState(_);
     Map<String,dynamic> info = ModalRoute.of(context)!.settings.arguments as Map<String,dynamic>;
     return Scaffold(
       appBar: AppBar(title: Text(info['titulo'])),
@@ -79,7 +80,6 @@ class _VerObraState extends State<VerObra> {
   }
 
   Widget _comprarObra(Map info) {
-    setState(() {});
     return AppStyles.getElevatedButton(
       texto: info['leitura'] ? 'Ler' : 'Comprar',
       onPressed: () => info['leitura'] ?
