@@ -15,7 +15,6 @@ class _VerObraState extends State<VerObra> {
 
   @override
   Widget build(BuildContext context) {
-    _controller.setSetState = (_) => setState(_);
     Map<String,dynamic> info = ModalRoute.of(context)!.settings.arguments as Map<String,dynamic>;
     return Scaffold(
       appBar: AppBar(title: Text(info['titulo'])),

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:buyk_app/app/services/obra_service.dart';
+import 'package:buyk_app/app/services/usuario_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,6 +14,7 @@ class AdicionarObraController {
   final _firebaseAuth = FirebaseAuth.instance;
   final _firebaseStorage = FirebaseStorage.instanceFor(app: Firebase.app());
   final _obraService = ObraService.instance;
+  final _usuarioService = UsuarioService.instance;
   final _tituloController = TextEditingController();
   final _sinopseController = TextEditingController();
   final _pontosController = TextEditingController();
@@ -102,7 +104,13 @@ class AdicionarObraController {
         'preco': int.parse(_pontosController.text),
         'autor': _firebaseAuth.currentUser!.uid,
       }.entries);
-      _obraService.add(infosObra).then((_) => Navigator.of(context).pushNamed('/mercadinho')).catchError((error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString()))));
+      _obraService.add(infosObra).then((obra) {
+        Map<String,dynamic> update = {'biblioteca': [obra.id]};
+        return _usuarioService.update(_firebaseAuth.currentUser!.uid, update).then((_) {
+          Navigator.of(context).pop();
+          return Navigator.of(context).pop();
+        });
+      }).catchError((error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString()))));
     }
   }
 

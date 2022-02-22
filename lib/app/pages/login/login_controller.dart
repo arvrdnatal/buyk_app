@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:buyk_app/app/app_styles.dart';
 import 'package:buyk_app/app/services/usuario_service.dart';
 import 'package:email_validator/email_validator.dart';
@@ -43,7 +45,7 @@ class LoginController {
 
     for(var usuario in await _usuarioService.getAll()) {
       if(usuario['email'] == _emailController.text) {
-        if(senha != usuario['senha']) {
+        if(base64Url.encode(utf8.encode(senha)) != usuario['senha']) {
           _mensagemValidacaoSenha = 'Senha incorreta';
           setState(() {});
           return;
@@ -55,6 +57,11 @@ class LoginController {
   Future vizualizarSenha(dynamic setState) async => setState(() => _senhaObscureText = !_senhaObscureText);
 
   void logarUsuario({required GlobalKey<FormState> formKey, required BuildContext context, required dynamic setState}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const AlertDialog(title: Text('Aguarde...'), content: LinearProgressIndicator()),
+    );
     verificaEmail(setState);
     verificaSenha(setState);
     if (formKey.currentState!.validate()) {
@@ -88,6 +95,8 @@ class LoginController {
             );
           }
         }).catchError((error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString()))));
+    } else {
+      Navigator.of(context).pop();
     }
   }
 

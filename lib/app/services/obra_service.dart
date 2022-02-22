@@ -10,7 +10,7 @@ class ObraService implements IServices {
   ObraService._constructor();
 
   @override
-  Future add(Map<String, dynamic> info) async  => _colection.doc().set(info);
+  Future add(Map<String, dynamic> info) async  => _colection.add(info);
 
   @override
   Future delete(String id) async {} // não se pode deletar uma obra ainda!

@@ -41,12 +41,18 @@ class _MeuPerfilState extends State<MeuPerfil> {
           builder: (context, snapshot) {
             if(snapshot.hasData) {
               Map dados = snapshot.data as Map;
-              return ListView(
-                children: [
-                  _perfil(dados['usuario']),
-                  _tituloBiblioteca(),
-                  _biblioteca(dados['biblioteca']),
-                ],
+              return NotificationListener<OverscrollIndicatorNotification>(
+                onNotification: ((overscroll) {
+                  overscroll.disallowIndicator();
+                  return overscroll.leading;
+                }),
+                child: ListView(
+                  children: [
+                    _perfil(dados['usuario']),
+                    _tituloBiblioteca(),
+                    _biblioteca(dados['biblioteca']),
+                  ],
+                ),
               );
             } else {
               return const Align(child: CircularProgressIndicator());
@@ -100,10 +106,10 @@ class _MeuPerfilState extends State<MeuPerfil> {
           child: Hero(
             tag: id,
             child: DecoratedBox(
-              decoration: BoxDecoration(borderRadius: const BorderRadiusDirectional.all(Radius.circular(2)), color: info['capa_livro'] != null ? Colors.transparent : Theme.of(context).primaryColor),
+              decoration: BoxDecoration(borderRadius: const BorderRadiusDirectional.all(Radius.circular(2)), color: info['capa_livro'].isNotEmpty ? Colors.transparent : Theme.of(context).primaryColor),
               child: SizedBox(
                 height: 800 * 0.25, width: 512 * 0.25,
-                child: info['capa_livro'] == null ?
+                child: info['capa_livro'].isEmpty ?
                 Icon(Icons.image_not_supported, color: Theme.of(context).scaffoldBackgroundColor) :
                 CachedNetworkImage(
                   imageUrl: info['capa_livro'],
@@ -115,7 +121,9 @@ class _MeuPerfilState extends State<MeuPerfil> {
         ),
       );
     });
-    return GridView.count(
+    return dados.isEmpty ?
+    Align(child: Text('Nenhum resultado encontrado ainda!', style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).hintColor))) :
+    GridView.count(
       shrinkWrap: true,
       mainAxisSpacing: 10,
       crossAxisSpacing: 10,

@@ -34,38 +34,30 @@ class _LeitorState extends State<Leitor> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> obra = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    return Scaffold(
-      appBar: AppBar(
-        title: EpubActualChapter(
-          controller: _epubController!,
-          builder: (chapterValue) => Text(
-            chapterValue?.chapter?.Title ?? '',
-            textAlign: TextAlign.center,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: EpubActualChapter(
+            controller: _epubController!,
+            builder: (chapterValue) => Text(
+              chapterValue?.chapter?.Title ?? '',
+              textAlign: TextAlign.center,
+            ),
           ),
+          leading: IconButton(icon: const Icon(Icons.arrow_back_rounded), onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+          }),
         ),
-        leading: IconButton(icon: const Icon(Icons.arrow_back_rounded), onPressed: () {
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
-        }),
-      ),
-      body: EpubView(
-        controller: _epubController!,
+        body: EpubView(
+          controller: _epubController!,
+        ),
       ),
     );
   }
-
-  /* Widget _drawer(EpubBook obra) {
-    List<Widget> capitulos  = [
-      ListTile(title: Text('Capítulos'.toUpperCase(), style: Theme.of(context).textTheme.headline2, textAlign: TextAlign.center))
-    ];
-    obra.Chapters?.forEach((capitulo) {
-      capitulos.add(ListTile(title: Text(capitulo.Title.toString())));
-    });
-    return Drawer(
-      child: ListView(
-        children: capitulos,
-      ),
-    );
-  } */
 }
