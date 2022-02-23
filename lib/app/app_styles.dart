@@ -20,8 +20,8 @@ class AppStyles {
   }) {
     return Padding(
       padding: EdgeInsets.only(
-        right: 20,
-        left: 20,
+        right: 25,
+        left: 25,
         bottom: isTheLast ? 0 : 20,
         top: isTheFirst ? 20 : 0,
       ),
@@ -97,8 +97,8 @@ class AppStyles {
     return Padding(
       padding: padding ?? EdgeInsets.only(
         top: 20,
-        right: minSize ? 0 : 20,
-        left: minSize ? 0 : 20,
+        right: minSize ? 0 : 25,
+        left: minSize ? 0 : 25,
       ),
       child: Center(
         child: ElevatedButton(

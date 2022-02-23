@@ -49,9 +49,10 @@ class AppTheme {
       // botões
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
+          visualDensity: VisualDensity.compact,
           padding: MaterialStateProperty.all<EdgeInsetsGeometry?>(EdgeInsets.zero),
           foregroundColor: MaterialStateProperty.all<Color?>(AppColors.lightGreen),
-          textStyle: MaterialStateProperty.all<TextStyle?>(GoogleFonts.raleway(fontSize: 15, letterSpacing: 1)),
+          textStyle: MaterialStateProperty.all<TextStyle?>(GoogleFonts.montserrat(fontSize: 15, letterSpacing: 1)),
         )
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(

@@ -1,5 +1,10 @@
-import 'package:buyk_app/app/pages/mercadinho/mercadinho_controller.dart';
+import 'dart:convert';
+
+import 'package:buyk_app/app/services/obra_service.dart';
+import 'package:buyk_app/app/services/usuario_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Mercadinho extends StatefulWidget {
@@ -10,30 +15,45 @@ class Mercadinho extends StatefulWidget {
 }
 
 class _MercadinhoState extends State<Mercadinho> {
-  final _controller = MercadinhoController();
+  final _firebaseAuth = FirebaseAuth.instance;
+  final _obraService = ObraService.instance;
+  final _usuarioService = UsuarioService.instance;
+  dynamic _usuario;
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () async {
+      _usuario = jsonDecode(jsonEncode((await _usuarioService.get(_firebaseAuth.currentUser!.uid))));
+      setState(() {});
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _controller.setSetState = (_) => setState(_);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mercadinho'),
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(icon: const Icon(Icons.account_circle_rounded), onPressed: () => _controller.meuPerfil(context)),
+          IconButton(icon: const Icon(Icons.account_circle_rounded), onPressed: () => Navigator.of(context).pushNamed('/meuperfil')),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add_rounded),
-        onPressed: () => _controller.adicionarObra(context),
+        onPressed: () => Navigator.of(context).pushNamed('/adicionarobra'),
       ),
       body: RefreshIndicator(
         onRefresh: () async => Future.delayed(const Duration(seconds: 2), () => setState(() {})),
-        child: FutureBuilder(
-          future: _controller.carregarObras(),
+        child: StreamBuilder(
+          stream: _obraService.getAllStream(),
           builder: (context, snapshot) {
             if(snapshot.hasData) {
-              Map dados = snapshot.data as Map;
+              QuerySnapshot dados = snapshot.data as QuerySnapshot;
+              Map obras = {};
+              for(var obra in dados.docs) {
+                obras[obra.id] = obra.data();
+              }
               return NotificationListener<OverscrollIndicatorNotification>(
                 onNotification: ((overscroll) {
                   overscroll.disallowIndicator();
@@ -42,7 +62,7 @@ class _MercadinhoState extends State<Mercadinho> {
                 child: ListView(
                   children: [
                     _tituloRecentes(),
-                    _livrosRecentes(dados),
+                    _livrosRecentes(obras),
                   ],
                 ),
               );
@@ -67,7 +87,7 @@ class _MercadinhoState extends State<Mercadinho> {
     dados.forEach((id, info) {
       obras.add(
         GestureDetector(
-          onTap: () => _controller.verObra(context, id, info),
+          onTap: () => _verObra(id, info),
           child: Hero(
             tag: id,
             child: DecoratedBox(
@@ -96,5 +116,13 @@ class _MercadinhoState extends State<Mercadinho> {
       children: obras,
       physics: const NeverScrollableScrollPhysics(),
     );
+  }
+
+  // BACK-END
+  Future _verObra(String id, Map info) async {
+    Map autor = await _usuarioService.get(info['autor']) as Map;
+    bool leitura = _usuario['biblioteca'].contains(id);
+    info.addEntries({'id': id, 'dados_autor': autor, 'leitura': leitura}.entries);
+    Navigator.of(context).pushNamed('/verobra', arguments: info);
   }
 }

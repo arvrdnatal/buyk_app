@@ -31,6 +31,9 @@ class ObraService implements IServices {
 
   @override
   Future getAll() async => (await _colection.get()).docs;
+  Stream getAllStream() {
+    return _colection.orderBy('nome').snapshots(); // não funfa ?
+  }
 
   @override
   Future update(String id, Map<String, dynamic> info) async {} // também não se pode atualizar as informações de uma obra ainda!
