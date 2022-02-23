@@ -12,7 +12,7 @@ class AppWidget extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.getTheme(context),
-      initialRoute: _firebaseAuth.currentUser != null ? '/mercadinho' : '/',
+      initialRoute: _firebaseAuth.currentUser != null ? '/mercadinho' : '/login',
       routes: AppRoutes.routes,
     );
   }

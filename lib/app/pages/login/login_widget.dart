@@ -14,9 +14,27 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    Future.delayed(Duration.zero, () => _controller.setStateController = (_) => setState(_));
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(100),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AppBar(
+              title: Text('Login', style: Theme.of(context).textTheme.headline2),
+              automaticallyImplyLeading: false,
+            ),
+          ],
+        ),
+      ),
+      // extendBodyBehindAppBar: true,
       body: Align(
         child: SingleChildScrollView(
           child: Column(
@@ -31,6 +49,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
               _botaoEntrar(),
+              _botaoCadastro(),
             ],
           ),
         ),
@@ -45,7 +64,7 @@ class _LoginState extends State<Login> {
       texto: 'E-mail',
       context: context,
       isTheFirst: true,
-      onChanged: (_) => _controller.verificaEmail((_) => setState(_)),
+      onChanged: (_) => _controller.verificaEmail(),
       checking: _controller.isCheckingEmail,
       hasAutoValidate: true,
       validator: (_) => _controller.mensagemValidacaoEmail,
@@ -58,7 +77,7 @@ class _LoginState extends State<Login> {
       texto: 'Senha',
       context: context,
       view: {
-        'onPressed' : () => _controller.vizualizarSenha((_) => setState(_)),
+        'onPressed' : () => _controller.vizualizarSenha(),
         'obscure' : _controller.senhaObscureText,
       },
       obscureText: _controller.senhaObscureText,
@@ -70,10 +89,20 @@ class _LoginState extends State<Login> {
   Widget _botaoEntrar() {
     return AppStyles.getElevatedButton(
       texto: 'Entrar',
-      onPressed: () => _controller.logarUsuario(
-        formKey: _formKey,
-        context: context,
-        setState: (_) => setState(_),
+      onPressed: () => _controller.logarUsuario(_formKey, context),
+      minSize: false,
+    );
+  }
+
+  Widget _botaoCadastro() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 30, right: 20, left: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Ainda não possui conta? '),
+          AppStyles.getTextButton(texto: 'Cadastre-se', onPressed: () {}),
+        ],
       ),
     );
   }

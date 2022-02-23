@@ -7,10 +7,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginController {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final UsuarioService _usuarioService = UsuarioService.instance;
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _senhaController = TextEditingController();
+  final _firebaseAuth = FirebaseAuth.instance;
+  final _usuarioService = UsuarioService.instance;
+  final _emailController = TextEditingController();
+  final _senhaController = TextEditingController();
+  dynamic _setState;
   dynamic _mensagemValidacaoEmail;
   dynamic _mensagemValidacaoSenha;
   bool _isCheckingEmail = false;
@@ -18,7 +19,7 @@ class LoginController {
 
   LoginController();
 
-  Future verificaEmail(dynamic setState) async {
+  Future verificaEmail() async {
     String email = _emailController.text;
     _mensagemValidacaoEmail = null;
     if(email.isEmpty) {
@@ -26,7 +27,7 @@ class LoginController {
     } else if(!EmailValidator.validate(email)) {
       _mensagemValidacaoEmail = 'O e-mail digitado é inválido';
     } else {
-      setState(() => _isCheckingEmail = true);
+      _setState(() => _isCheckingEmail = true);
 
       List<String> emails = [];
       for(var usuario in await _usuarioService.getAll()) {
@@ -34,11 +35,11 @@ class LoginController {
       }
 
       if(!emails.contains(email)) _mensagemValidacaoEmail = 'O email digitado não existe';
-      setState(() => _isCheckingEmail = false);
+      _setState(() => _isCheckingEmail = false);
     }
   }
 
-  Future verificaSenha(dynamic setState) async {
+  Future verificaSenha() async {
     String senha = _senhaController.text;
     _mensagemValidacaoSenha = null;
     if(senha.isEmpty) _mensagemValidacaoSenha = 'O campo senha não pode ficar vazio';
@@ -47,23 +48,23 @@ class LoginController {
       if(usuario['email'] == _emailController.text) {
         if(base64Url.encode(utf8.encode(senha)) != usuario['senha']) {
           _mensagemValidacaoSenha = 'Senha incorreta';
-          setState(() {});
+          _setState(() {});
           return;
         }
       }
     }
   }
 
-  Future vizualizarSenha(dynamic setState) async => setState(() => _senhaObscureText = !_senhaObscureText);
+  Future vizualizarSenha() async => _setState(() => _senhaObscureText = !_senhaObscureText);
 
-  void logarUsuario({required GlobalKey<FormState> formKey, required BuildContext context, required dynamic setState}) {
+  void logarUsuario(GlobalKey<FormState> formKey, BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => const AlertDialog(title: Text('Aguarde...'), content: LinearProgressIndicator()),
     );
-    verificaEmail(setState);
-    verificaSenha(setState);
+    verificaEmail();
+    verificaSenha();
     if (formKey.currentState!.validate()) {
       _firebaseAuth.signInWithEmailAndPassword(
           email: _emailController.text,
@@ -81,9 +82,7 @@ class LoginController {
                   actions: [
                     AppStyles.getTextButton(
                       texto: 'Sim',
-                      onPressed: () {
-                        result.user!.sendEmailVerification().then((_) => Navigator.of(context).pop());
-                      },
+                      onPressed: () => result.user!.sendEmailVerification().then((_) => Navigator.of(context).pop()),
                     ),
                     AppStyles.getTextButton(
                       texto: 'Não',
@@ -106,4 +105,5 @@ class LoginController {
   bool get senhaObscureText => _senhaObscureText;
   TextEditingController get emailController => _emailController;
   TextEditingController get senhaController => _senhaController;
+  set setStateController(dynamic funcao) => _setState = funcao;
 }

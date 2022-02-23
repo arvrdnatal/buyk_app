@@ -92,14 +92,19 @@ class AppStyles {
     required Function() onPressed,
     IconData? icone,
     EdgeInsetsGeometry? padding,
+    bool minSize = true,
   }) {
     return Padding(
-      padding: padding ?? const EdgeInsets.only(top: 20),
+      padding: padding ?? EdgeInsets.only(
+        top: 20,
+        right: minSize ? 0 : 20,
+        left: minSize ? 0 : 20,
+      ),
       child: Center(
         child: ElevatedButton(
           onPressed: onPressed,
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: minSize ? MainAxisSize.min : MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if(icone != null) Icon(icone),
@@ -118,12 +123,17 @@ class AppStyles {
   }) {
     return TextButton(
       onPressed: onPressed,
-      child: Row(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if(icone != null) Icon(icone),
-          Text(texto),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if(icone != null) Icon(icone),
+              Text(texto),
+            ],
+          ),
         ],
       ),
     );
