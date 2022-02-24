@@ -87,10 +87,8 @@ class _CadastroState extends State<Cadastro> {
       context: context,
       onChanged: (_) => _verificarUsername(),
       checking: _isCheckingUsername,
-      validator: (_) {
-        _verificarUsername();
-        return _mensagemValidacaoUsername;
-      },
+      validator: (_) => _mensagemValidacaoUsername,
+      hasAutoValidate: true,
     );
   }
 
@@ -100,10 +98,7 @@ class _CadastroState extends State<Cadastro> {
       texto: 'E-mail',
       context: context,
       onChanged: (_) => _verificarEmail(),
-      validator: (_) {
-        _verificarEmail();
-        return _mensagemValidacaoEmail;
-      },
+      validator: (_) => _mensagemValidacaoEmail,
       hasAutoValidate: true,
       checking: _isCheckingEmail,
     );
