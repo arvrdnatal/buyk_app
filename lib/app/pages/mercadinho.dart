@@ -121,7 +121,7 @@ class _MercadinhoState extends State<Mercadinho> {
   // BACK-END
   Future _verObra(String id, Map info) async {
     Map autor = await _usuarioService.get(info['autor']) as Map;
-    bool leitura = _usuario['biblioteca'].contains(id);
+    bool leitura = _usuario['biblioteca'].containsKey(id);
     info.addEntries({'id': id, 'dados_autor': autor, 'leitura': leitura}.entries);
     Navigator.of(context).pushNamed('/verobra', arguments: info);
   }

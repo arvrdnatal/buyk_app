@@ -197,7 +197,7 @@ class _CadastroState extends State<Cadastro> {
           'senha': base64Url.encode(utf8.encode(_senhaController.text)),
           'username': _usernameController.text,
           'pontos': 2000,
-          'biblioteca': [],
+          'biblioteca': {},
         }).then((_) {
           showDialog(
             context: context,

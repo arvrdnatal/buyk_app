@@ -46,6 +46,7 @@ dependencies:
   starlight_epub_viewer: 
     git:
       url: https://github.com/YeMyoAung/starlight_epub_viewer.git
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

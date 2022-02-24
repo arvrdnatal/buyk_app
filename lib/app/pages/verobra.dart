@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:buyk_app/app/app_styles.dart';
+import 'package:buyk_app/app/services/obra_service.dart';
 import 'package:buyk_app/app/services/usuario_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,6 +20,7 @@ class _VerObraState extends State<VerObra> {
   final _firebaseAuth = FirebaseAuth.instance;
   final _firebaseStorage = FirebaseStorage.instanceFor(app: Firebase.app());
   final _usuarioService = UsuarioService.instance;
+  final _obraService = ObraService.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -113,8 +115,8 @@ class _VerObraState extends State<VerObra> {
       builder: (context) => const AlertDialog(title: Text('Aguarde...'), content: LinearProgressIndicator()),
     );
     Map<String,dynamic> usuario = await _usuarioService.get(_firebaseAuth.currentUser!.uid) as Map<String,dynamic>;
-    List bibliotecaPrivada = usuario['biblioteca'] as List;
-    if(!bibliotecaPrivada.contains(info['id']))  {
+    Map bibliotecaPrivada = usuario['biblioteca'] as Map;
+    if(!bibliotecaPrivada.containsKey(info['id'])) {
       if(usuario['pontos'] < info['preco']) {
         showDialog(
           context: context,
@@ -143,15 +145,17 @@ class _VerObraState extends State<VerObra> {
                 texto: 'Sim',
                 onPressed: () async {
                   Map<String,dynamic> autor = await _usuarioService.get(info['autor']) as Map<String,dynamic>;
+                  Map<String,dynamic> obra = await _obraService.get(info['id']) as Map<String,dynamic>;
+                  Map<String, dynamic> updateBiblioteca = {};
+                  updateBiblioteca[info['id']] = obra;
                   Map<String,dynamic> updateUser = {
                     'pontos': usuario['pontos'] - info['preco'],
-                    'biblioteca': [info['id']],
+                    'biblioteca': updateBiblioteca,
                   };
-                  Map<String,dynamic> updateAutor = {'pontos': autor['pontos'] + info['preco']};
                   _usuarioService.update(_firebaseAuth.currentUser!.uid, updateUser).then((_) {
+                    Map<String,dynamic> updateAutor = {'pontos': autor['pontos'] + info['preco']};
                     _usuarioService.update(info['autor'], updateAutor).then((_) {
                       String titulo = info['titulo'];
-                      Navigator.of(context).pop();
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(

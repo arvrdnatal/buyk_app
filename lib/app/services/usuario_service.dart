@@ -1,34 +1,34 @@
 import 'dart:convert';
 
-import 'package:buyk_app/app/services/interface_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class UsuarioService implements IServices {
+class UsuarioService {
   static final instance = UsuarioService._constructor();
-  final _colection = FirebaseFirestore.instance.collection("usuarios");
+  final _colection = FirebaseFirestore.instance.collection('usuarios');
 
   UsuarioService._constructor();
 
-  @override
   Future add(Map<String, dynamic> info) async {
     String id = info['id'];
     info.remove('id');
     _colection.doc(id).set(info);
   }
 
-  @override
-  Future delete(String id) async => _colection.doc(id).delete();
+  // Future delete(String id) async => _colection.doc(id).delete();
 
-  @override
   Future update(String id, Map<String, dynamic> info) async {
       Map<String,dynamic> usuario = jsonDecode(jsonEncode((await _colection.doc(id).get()).data()));
-      List biblioteca = [];
+      Map<String,dynamic> biblioteca = {};
       if(usuario.containsKey('biblioteca')) {
-        biblioteca.addAll(usuario['biblioteca']);
+        usuario['biblioteca'].forEach((id, info) {
+          biblioteca[id] = info;
+        });
         usuario.remove('biblioteca');
       }
       if(info.containsKey('biblioteca')) {
-        biblioteca.addAll(info['biblioteca']);
+        info['biblioteca'].forEach((id, info) {
+          biblioteca[id] = info;
+        });
         info.remove('biblioteca');
       }
       usuario.addEntries(info.entries);
@@ -37,7 +37,6 @@ class UsuarioService implements IServices {
       _colection.doc(id).set(usuario);
   }
 
-  @override
   Future get(String id) async {
     Map<String,dynamic> data = jsonDecode(jsonEncode((await _colection.doc(id).get()).data()));
     return {
@@ -53,6 +52,5 @@ class UsuarioService implements IServices {
     };
   }
 
-  @override
   Future getAll() async => (await _colection.get()).docs;
 }

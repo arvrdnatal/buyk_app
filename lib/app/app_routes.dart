@@ -1,12 +1,12 @@
-import 'package:buyk_app/app/pages/adicionarObra/adicionarobra_widget.dart';
+import 'package:buyk_app/app/pages/adicionarobra.dart';
 import 'package:buyk_app/app/pages/cadastro.dart';
-import 'package:buyk_app/app/pages/editarPerfil/editarperfil_widget.dart';
+import 'package:buyk_app/app/pages/editarperfil.dart';
 import 'package:buyk_app/app/pages/getStarted/getstarted_widget.dart';
 import 'package:buyk_app/app/pages/infonovaobra.dart';
 import 'package:buyk_app/app/pages/leitor.dart';
 import 'package:buyk_app/app/pages/login.dart';
-import 'package:buyk_app/app/pages/mercadinho/mercadinho_widget.dart';
-import 'package:buyk_app/app/pages/meuPerfil/meuperfil_widget.dart';
+import 'package:buyk_app/app/pages/mercadinho.dart';
+import 'package:buyk_app/app/pages/meuperfil.dart';
 import 'package:buyk_app/app/pages/verobra.dart';
 import 'package:flutter/material.dart';
 
